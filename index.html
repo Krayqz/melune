@@ -209,6 +209,9 @@
   .wday b{font-size:18px;font-weight:600}
   .wday.today{background:var(--accent);color:#fff}
   .wday.today span{color:rgba(255,255,255,.85)}
+  .phase-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .daypill{flex:none;background:var(--accent-pale);color:var(--ink-soft);font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px}
+  .phase-prog.big{height:8px;margin-top:16px}
   /* Hilfe, Über, Wissen */
   details.faq{border-bottom:1px solid var(--line);padding:14px 0}
   details.faq:last-child{border-bottom:0}
@@ -374,10 +377,9 @@
 
     <div class="card">
       <div class="eyebrow">Deine aktuelle Phase</div>
-      <div class="serif" style="font-size:26px;line-height:1.2" id="h-phase-name">–</div>
-      <p class="muted" style="margin-top:4px" id="h-phase">–</p>
-      <div class="phases"><div data-hph="0"></div><div data-hph="1"></div><div data-hph="2"></div><div data-hph="3"></div></div>
-      <div class="phase-prog"><i id="h-prog"></i></div>
+      <div class="phase-head"><div class="serif" style="font-size:28px;line-height:1.2" id="h-phase-name">–</div><span class="daypill hidden" id="h-daypill"></span></div>
+      <p class="muted" style="margin-top:6px" id="h-phase">–</p>
+      <div class="phase-prog big"><i id="h-prog"></i></div>
       <p class="small disclaimer">Schätzung auf Basis deiner Einträge – keine sichere Verhütungsmethode.</p>
     </div>
 
@@ -1186,7 +1188,8 @@
   };
 
   /* ================= Stimmung ================= */
-  const PHASE_TXT = ["Zeit für Ruhe und Wärme.","Deine Energie steigt.","Deine fruchtbarsten Tage.","Dein Körper bereitet sich vor."];
+  const PHASE_TXT = ["Deine Gebärmutterschleimhaut wird abgebaut. Gönn dir Ruhe und Wärme.","Dein Körper bereitet sich auf den Eisprung vor. Dein Östrogenspiegel steigt.","Ein Ei springt. Das sind deine fruchtbarsten Tage.","Progesteron steigt. Dein Körper bereitet sich auf die nächste Periode vor."];
+  const inDays = d => { const n = diff(d, today()); return n<=0 ? "heute" : n===1 ? "morgen" : "in "+n+" Tagen"; };
   const MOODS = [["😊","Gut"],["😐","Okay"],["🥰","Verliebt"],["😔","Traurig"],["😣","Gestresst"]];
   function renderMood(){
     const u = me(); u.mood = u.mood || {}; const cur = u.mood[ds(today())];
@@ -1262,12 +1265,13 @@
     $("h-phase-name").textContent = a.phase || "Noch keine Daten";
     if(a.day){
       const until = diff(a.nextPeriod, today());
-      $("h-phase").textContent = PHASE_TXT[a.phaseIdx]+" Periode "+(until<=0 ? "heute fällig." : "in ca. "+until+(until===1?" Tag.":" Tagen."));
-      $("h-next-period").textContent = fmt(a.nextPeriod);
-      $("h-next-ovu").textContent = fmt(a.ovu);
+      $("h-phase").textContent = PHASE_TXT[a.phaseIdx];
+      $("h-next-period").textContent = inDays(a.nextPeriod); $("h-next-period").title = fmt(a.nextPeriod);
+      $("h-next-ovu").textContent = inDays(a.ovu); $("h-next-ovu").title = fmt(a.ovu);
+      $("h-daypill").textContent = "Zyklustag "+a.day; $("h-daypill").classList.remove("hidden");
     } else {
       $("h-phase").textContent = "Trag deine Periode im Kalender ein.";
-      $("h-next-period").textContent = "–"; $("h-next-ovu").textContent = "–";
+      $("h-next-period").textContent = "–"; $("h-next-ovu").textContent = "–"; $("h-daypill").classList.add("hidden");
     }
     $("h-impuls").textContent = impulse(a);
     if(a.late>0) $("h-phase").textContent = "Deine Periode ist "+a.late+(a.late===1?" Tag":" Tage")+" überfällig.";
