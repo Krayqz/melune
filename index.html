@@ -195,6 +195,12 @@
   .picker input::-moz-color-swatch{border:2px solid var(--line);border-radius:50%}
   .picker b{display:block;font-size:14px}
   .picker .small{display:block;font-size:11px}
+  .tapcard{border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+  .tapcard:active{transform:scale(.98)}
+  .vary-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .vary-opts button{border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:10px 12px;text-align:left;font:inherit;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer}
+  .vary-opts button span{display:block;font-weight:400;font-size:11px;color:var(--ink-soft)}
+  .vary-opts button.on{border:2px solid var(--accent);background:var(--accent-pale)}
   /* Hilfe, Über, Wissen */
   details.faq{border-bottom:1px solid var(--line);padding:14px 0}
   details.faq:last-child{border-bottom:0}
@@ -376,6 +382,33 @@
         <div class="serif big" id="h-avg-per">–</div>
         <div class="small">Durchschnittlich</div>
       </div>
+    </div>
+    <div class="duo">
+      <button class="card mini tapcard" id="h-vary-card">
+        <div class="eyebrow">Schwankung</div>
+        <div class="serif big" id="h-vary">–</div>
+        <div class="small" id="h-vary-src">Tippe zum Eintragen</div>
+      </button>
+      <button class="card mini tapcard" id="h-last-card">
+        <div class="eyebrow">Letzter Zyklus</div>
+        <div class="serif big" id="h-last">–</div>
+        <div class="small" id="h-last-src">Tippe zum Eintragen</div>
+      </button>
+    </div>
+    <div class="card hidden" id="h-cyc-edit">
+      <div class="eyebrow">Deinen Zyklus eintragen</div>
+      <div class="field"><label>Wie stark schwankt dein Zyklus?</label>
+        <div class="vary-opts" id="ce-vary">
+          <button data-v="auto">Automatisch<span>aus deinen Einträgen</span></button>
+          <button data-v="1">Regelmäßig<span>± 1–2 Tage</span></button>
+          <button data-v="4">Leicht schwankend<span>± 3–5 Tage</span></button>
+          <button data-v="7">Unregelmäßig<span>± 6 Tage oder mehr</span></button>
+        </div>
+      </div>
+      <div class="field"><label for="ce-last">Wie lang war dein letzter Zyklus? (Tage)</label><input class="input" id="ce-last" type="number" min="15" max="60" placeholder="z. B. 29"></div>
+      <p class="small" style="margin:-4px 4px 4px">Wenn du deine Perioden im Kalender einträgst, rechnet MÉLUNE beides automatisch aus.</p>
+      <button class="btn primary" id="ce-save">Speichern</button>
+      <button class="btn mt10" id="ce-cancel">Abbrechen</button>
     </div>
 
     <div class="card">
@@ -921,7 +954,7 @@
   };
   function saveCycle(u, last, len, per){
     const old = u.cycle;
-    u.cycle = {last, len:Math.min(45,Math.max(18,+len||28)), per:Math.min(10,Math.max(1,+per||5))};
+    u.cycle = {...(old||{}), last, len:Math.min(45,Math.max(18,+len||28)), per:Math.min(10,Math.max(1,+per||5))};
     if(last && (!old || old.last!==last)){
       const set = new Set(u.periods);
       for(let i=0;i<u.cycle.per;i++) set.add(ds(add(pd(last),i)));
@@ -1092,6 +1125,47 @@
   }
   $("ct-save").onclick = () => { ctDraft.start = $("ct-start").value || ds(today()); saveContra(); show("profil"); };
 
+  /* ================= Schwankung & letzter Zyklus ================= */
+  const VARY_TXT = {1:["± 1–2 Tage","Regelmäßig"],4:["± 3–5 Tage","Leicht schwankend"],7:["± 6+ Tage","Unregelmäßig"]};
+  function cycleExtras(u, a){
+    const c = u.cycle || {}, ls = a.cycles.slice(-6).map(x=>x.len);
+    let vary, varySrc, last, lastSrc;
+    if(c.vary && c.vary!=="auto"){ vary = VARY_TXT[c.vary][0]; varySrc = VARY_TXT[c.vary][1]+" · deine Angabe"; }
+    else if(ls.length>=2){ const mn=Math.min(...ls), mx=Math.max(...ls), h=Math.ceil((mx-mn)/2);
+      vary = h===0 ? "± 0 Tage" : "± "+h+(h===1?" Tag":" Tage"); varySrc = mn===mx ? "Sehr regelmäßig" : mn+"–"+mx+" Tage · aus Einträgen"; }
+    else { vary = "–"; varySrc = "Tippe zum Eintragen"; }
+    if(a.cycles.length){ const lc = a.cycles[a.cycles.length-1]; last = lc.len+" Tage"; lastSrc = "Ab "+pd(lc.start).toLocaleDateString("de-DE",{day:"numeric",month:"short"})+" · aus Einträgen"; }
+    else if(c.lastLen){ last = c.lastLen+" Tage"; lastSrc = "Deine Angabe"; }
+    else { last = "–"; lastSrc = "Tippe zum Eintragen"; }
+    return {vary, varySrc, last, lastSrc};
+  }
+  function renderCycleExtras(u, a){
+    const x = cycleExtras(u, a);
+    $("h-vary").textContent = x.vary; $("h-vary-src").textContent = x.varySrc;
+    $("h-last").textContent = x.last; $("h-last-src").textContent = x.lastSrc;
+  }
+  let ceVary = "auto";
+  function openCycleEdit(focusLast){
+    const u = me(), c = u.cycle || {};
+    ceVary = c.vary || "auto";
+    document.querySelectorAll("#ce-vary button").forEach(b=>b.classList.toggle("on", b.dataset.v===String(ceVary)));
+    $("ce-last").value = c.lastLen || "";
+    $("h-cyc-edit").classList.remove("hidden");
+    $("h-cyc-edit").scrollIntoView({behavior:"smooth", block:"center"});
+    if(focusLast) setTimeout(()=>$("ce-last").focus(), 300);
+  }
+  document.querySelectorAll("#ce-vary button").forEach(b=>b.onclick=()=>{ ceVary=b.dataset.v; document.querySelectorAll("#ce-vary button").forEach(x=>x.classList.toggle("on",x===b)); });
+  $("h-vary-card").onclick = () => openCycleEdit(false);
+  $("h-last-card").onclick = () => openCycleEdit(true);
+  $("ce-cancel").onclick = () => $("h-cyc-edit").classList.add("hidden");
+  $("ce-save").onclick = () => {
+    const u = me(); u.cycle = u.cycle || {last:"", len:28, per:5};
+    u.cycle.vary = ceVary==="auto" ? "auto" : +ceVary;
+    const l = +$("ce-last").value;
+    if(l){ if(l<15||l>60) return toast("Bitte eine Länge zwischen 15 und 60 Tagen eingeben"); u.cycle.lastLen = l; } else delete u.cycle.lastLen;
+    saveUsers(); $("h-cyc-edit").classList.add("hidden"); renderAll(); toast("Gespeichert ♡");
+  };
+
   /* ================= Stimmung ================= */
   const PHASE_TXT = ["Zeit für Ruhe und Wärme.","Deine Energie steigt.","Deine fruchtbarsten Tage.","Dein Körper bereitet sich vor."];
   const MOODS = [["😊","Gut"],["😐","Okay"],["🥰","Verliebt"],["😔","Traurig"],["😣","Gestresst"]];
@@ -1162,6 +1236,7 @@
     document.querySelectorAll("[data-hph]").forEach(d=>d.classList.toggle("on", +d.dataset.hph===a.phaseIdx));
     $("h-avg-len").textContent = a.avgLen+" Tage"; $("h-avg-per").textContent = a.avgPer+" Tage";
     $("h-avg-len-src").textContent = a.cycles.length ? "Basierend auf deinen Einträgen" : "Basierend auf deinen Angaben";
+    renderCycleExtras(u, a);
     renderMood();
     $("h-prog").style.width = (a.day ? Math.min(100, a.day/a.avgLen*100) : 0)+"%";
     $("h-phase-name").textContent = a.phase || "Noch keine Daten";
