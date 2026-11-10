@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MÉLUNE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6efed; --card:#fdf9f8; --line:#ecdfdc; --ink:#5e4a50; --ink-soft:#8a7a7e;
+    --accent:#b77e8b; --accent-soft:#ead8dc; --accent-pale:#f3e7e9; --nav:#fdf9f8;
+    --fertile:#8fae9a; --fertile-soft:#dde9e0; --danger:#b4505a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45;transition:background .3s,color .3s}
+  .app{max-width:480px;margin:0 auto;min-height:100%;position:relative;padding:0 16px calc(120px + env(safe-area-inset-bottom))}
+  .serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500}
+  h1.serif{font-size:34px;padding:28px 4px 18px;letter-spacing:.2px;line-height:1.15}
+  h2.serif{font-size:26px;margin:28px 4px 14px}
+  .card{background:var(--card);border-radius:24px;padding:20px;margin-bottom:16px;transition:background .3s}
+  .eyebrow{font-size:11px;letter-spacing:2.6px;text-transform:uppercase;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+  .muted{color:var(--ink-soft);font-size:14px}
+  .small{font-size:12px;color:var(--ink-soft)}
+  .input{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:13px 14px;font:inherit;font-size:16px;color:var(--ink);color-scheme:light}
+  body.dark .input{color-scheme:dark}
+  .input:focus{outline:none;border-color:var(--accent)}
+  .btn{display:block;width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;padding:13px;border-radius:999px;margin-top:16px;cursor:pointer}
+  .btn:active{background:var(--accent-pale)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 25%,var(--line))}
+  .btn.mt10{margin-top:10px}
+  .link{background:none;border:0;font:inherit;color:var(--accent);font-weight:600;cursor:pointer;padding:0}
+  .hidden{display:none!important}
+
+  /* Profile */
+  .profile-head{display:flex;align-items:center;gap:16px}
+  .avatar{width:64px;height:64px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;font-family:"Cormorant Garamond",serif;font-size:28px;color:var(--accent)}
+  .profile-head .name{font-size:24px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+  .stat{background:var(--accent-pale);border-radius:16px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:18px;color:var(--accent)}
+  .row-title{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px}
+  .pill{margin-left:auto;font-size:12px;font-weight:500;background:var(--accent-soft);color:var(--ink-soft);padding:3px 10px;border-radius:999px}
+
+  /* Settings list */
+  .list{padding:6px 20px}
+  .item{display:flex;align-items:center;gap:16px;padding:16px 0;border:0;border-bottom:1px solid var(--line);cursor:pointer;width:100%;background:none;font:inherit;color:inherit;text-align:left}
+  .item:last-child{border-bottom:0}
+  .item .ic{width:24px;display:grid;place-items:center;color:var(--ink)}
+  .item .t{font-weight:600;font-size:16px}
+  .item .s{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .item .chev{margin-left:auto;color:var(--ink-soft);font-size:18px}
+  .brand{text-align:center;padding:26px 0 8px}
+  .brand .serif{font-size:22px;letter-spacing:5px}
+
+  /* Subpage */
+  .sub-head{display:flex;align-items:center;gap:12px;padding:22px 0 14px}
+  .back{width:40px;height:40px;border-radius:50%;border:0;background:var(--card);color:var(--ink);font-size:20px;cursor:pointer;display:grid;place-items:center}
+  .sub-head h1.serif{padding:0;font-size:30px}
+
+  /* Theme picker */
+  .themes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .theme{border:1.5px solid var(--line);background:var(--card);border-radius:18px;padding:14px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+  .theme.active{border:2px solid var(--accent);box-shadow:0 0 0 2px var(--accent-pale)}
+  .dots{display:flex;gap:6px;margin-bottom:10px}
+  .dots i{width:24px;height:24px;border-radius:50%;display:block}
+  .theme span{font-weight:600;font-size:16px}
+  label.small{display:block;margin:18px 0 8px}
+
+  /* Segmented */
+  .seg{display:grid;grid-auto-columns:1fr;grid-auto-flow:column;background:var(--accent-pale);border-radius:999px;padding:4px}
+  .seg button{border:0;background:none;font:inherit;font-weight:600;padding:10px;border-radius:999px;color:var(--ink-soft);cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+  /* Toggle rows */
+  .trow{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .trow:last-child{border-bottom:0}
+  .trow .t{font-weight:600}
+  .trow .s{font-size:12px;color:var(--ink-soft)}
+  .switch{margin-left:auto;position:relative;width:50px;height:30px;flex:none}
+  .switch input{opacity:0;width:0;height:0}
+  .switch span{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s;cursor:pointer}
+  .switch span:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch input:checked+span{background:var(--accent)}
+  .switch input:checked+span:before{transform:translateX(20px)}
+  .time{width:auto;padding:8px 12px;border-radius:12px;font-size:15px;margin-left:auto}
+
+  /* Home */
+  .ring{width:210px;height:210px;margin:4px auto 18px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(color-mix(in srgb,var(--accent) 55%,#fff),var(--accent) calc(var(--p,0)*1%),var(--accent-soft) 0)}
+  .ring>div{width:180px;height:180px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center}
+  .center{text-align:center}
+  .remind{display:flex;gap:12px;align-items:center;background:var(--accent-pale);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+  .remind .bell{width:34px;height:34px;border-radius:50%;background:var(--card);display:grid;place-items:center;flex:none;color:var(--accent)}
+  .remind b{display:block;font-size:14px}
+  .remind span{font-size:13px;color:var(--ink-soft)}
+  .next{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .next>div{background:var(--accent-pale);border-radius:16px;padding:14px}
+  .next b{display:block;font-size:17px;margin-top:2px}
+
+  /* Calendar */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head .serif{font-size:24px}
+  .cal-nav{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+  .cal .wd{font-size:11px;color:var(--ink-soft);font-weight:600;padding:4px 0}
+  .day{aspect-ratio:1;border:0;background:none;font:inherit;font-size:15px;color:var(--ink);border-radius:50%;cursor:pointer;position:relative;display:grid;place-items:center}
+  .day.out{visibility:hidden}
+  .day.period{background:var(--accent);color:#fff;font-weight:600}
+  .day.pred{border:2px dashed var(--accent);color:var(--accent)}
+  .day.fertile{background:var(--fertile-soft)}
+  .day.ovu{background:var(--fertile);color:#fff;font-weight:600}
+  .day.today:after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+  .day.period.today:after,.day.ovu.today:after{background:#fff}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12px;color:var(--ink-soft)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+  /* Body */
+  .bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:14px}
+  .bars div{flex:1;background:var(--accent-soft);border-radius:8px 8px 4px 4px;position:relative;min-height:6px}
+  .bars div.cur{background:var(--accent)}
+  .bars div span{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink-soft)}
+  .bar-labels{display:flex;gap:8px;margin-top:6px}
+  .bar-labels span{flex:1;text-align:center;font-size:10px;color:var(--ink-soft)}
+  .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px 0 6px}
+  .phases div{height:8px;border-radius:4px;background:var(--accent-soft)}
+  .phases div.on{background:var(--accent)}
+  .phase-names{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:10px;color:var(--ink-soft);text-align:center}
+
+  /* Auth */
+  .auth-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 0}
+  .auth-brand{text-align:center;margin-bottom:26px}
+  .auth-brand .logo{font-size:44px;letter-spacing:9px}
+  .moon{width:56px;height:56px;margin:0 auto 12px;border-radius:50%;background:radial-gradient(circle at 65% 40%,var(--bg) 46%,transparent 47%),var(--accent)}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;color:var(--ink-soft);margin:0 0 6px 4px}
+  .err{color:var(--danger);font-size:13px;min-height:18px;margin:4px 4px 0}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-soft);margin:8px 4px}
+  .check input{margin-top:3px;accent-color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .steps{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .steps i{width:28px;height:4px;border-radius:4px;background:var(--accent)}
+  .kv{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:12px}
+  .kv:last-child{border-bottom:0}
+  .kv span:last-child{color:var(--ink-soft);text-align:right;word-break:break-all}
+
+  /* PIN lock */
+  .lock{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+  .pin-dots{display:flex;gap:16px;margin:22px 0 8px}
+  .pin-dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent)}
+  .pin-dots i.f{background:var(--accent)}
+  .pin-dots.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .keypad{display:grid;grid-template-columns:repeat(3,72px);gap:16px;margin-top:20px}
+  .keypad button{width:72px;height:72px;border-radius:50%;border:0;background:var(--card);color:var(--ink);font:inherit;font-size:26px;cursor:pointer}
+  .keypad button:active{background:var(--accent-soft)}
+  .keypad button.ghost{background:none;font-size:14px;color:var(--ink-soft)}
+
+  /* Nav */
+  nav{position:fixed;left:0;right:0;bottom:0;background:var(--nav);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:10;transition:background .3s}
+  nav .inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:end}
+  nav button{background:none;border:0;font:inherit;font-size:11px;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+  nav button.on{color:var(--ink);font-weight:600}
+  nav svg{width:22px;height:22px}
+  nav .plus{margin-top:-34px}
+  nav .plus .fab{width:50px;height:50px;border-radius:50%;background:var(--accent);color:#fff;font-size:30px;line-height:1;display:grid;place-items:center;box-shadow:0 6px 14px rgba(0,0,0,.15)}
+  body.no-nav nav{display:none}
+
+  /* Home-Kopf */
+  .htop{display:flex;align-items:center;justify-content:space-between;padding:22px 4px 18px}
+  .hbrand{font-size:26px;line-height:1;letter-spacing:5px}
+  .htag{font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--ink-soft);margin-top:4px;font-weight:600}
+  .hbtns{display:flex;gap:8px}
+  .icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+  .icon-btn svg{width:20px;height:20px}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card.mini{padding:18px 16px}
+  .card.mini .eyebrow{font-size:9.5px;letter-spacing:1.8px;margin-bottom:8px}
+  .big{font-size:26px;line-height:1.1;margin-bottom:4px}
+  .phase-prog{height:4px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden}
+  .phase-prog i{display:block;height:100%;background:var(--accent);border-radius:4px}
+  .ring.sm{width:104px;height:104px;margin:0;flex:none}
+  .ring.sm>div{width:88px;height:88px}
+  .disclaimer{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .moods{display:flex;justify-content:space-between;margin-top:14px}
+  .mood{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);font-size:26px;cursor:pointer;transition:transform .15s}
+  .mood.on{border:2px solid var(--accent);background:var(--accent-pale);transform:scale(1.1)}
+
+  /* Onboarding */
+  .onb{min-height:100vh;display:flex;flex-direction:column;padding:24px 0 32px}
+  .onb-skip{align-self:flex-end;margin:8px 4px 0}
+  .onb-slide{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 12px;animation:fade .35s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .onb-art{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;margin-bottom:34px;background:radial-gradient(circle at 30% 30%,var(--card),var(--accent-soft));box-shadow:0 20px 40px -24px var(--accent);color:var(--accent)}
+  .onb-art svg{width:78px;height:78px}
+  .onb-slide h1.serif{padding:0 0 12px;font-size:34px}
+  .onb-slide p{color:var(--ink-soft);font-size:16px;max-width:320px}
+  .onb-dots{display:flex;gap:8px;justify-content:center;margin:26px 0 6px}
+  .onb-dots i{width:8px;height:8px;border-radius:999px;background:var(--accent-soft);transition:.3s}
+  .onb-dots i.on{width:26px;background:var(--accent)}
+
+  /* Impuls */
+  .impuls{background:linear-gradient(135deg,var(--accent-pale),var(--card));position:relative;overflow:hidden}
+  .impuls:after{content:"✦";position:absolute;right:18px;top:14px;color:var(--accent);opacity:.5;font-size:20px}
+  .impuls .serif{font-size:21px;line-height:1.3;margin-top:4px}
+
+  /* Heute: Wasser & Schlaf */
+  .track{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+  .track+.track{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .track .lbl b{display:block;font-size:15px}
+  .track .lbl span{font-size:12px;color:var(--ink-soft)}
+  .drops{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+  .drop{width:30px;height:34px;border:0;background:none;cursor:pointer;padding:0;color:var(--accent-soft)}
+  .drop.on{color:var(--accent)}
+  .drop svg{width:100%;height:100%}
+  .stepper{display:flex;align-items:center;gap:10px}
+  .stepper button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:20px;cursor:pointer}
+  .stepper b{min-width:64px;text-align:center;font-size:18px}
+
+  /* Pille */
+  .pillrow{display:flex;align-items:center;gap:14px}
+  .pillbar{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin:14px 0 4px}
+  .pillbar i{aspect-ratio:1;border-radius:50%;background:var(--accent-soft)}
+  .pillbar i.done{background:var(--accent)}
+  .pillbar i.now{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent)}
+  .pillbar i.pause{background:none;border:1.5px dashed var(--line)}
+  .btn.taken{background:var(--fertile-soft);border-color:transparent;color:var(--ink);font-weight:600}
+
+  /* Hinweise */
+  .alert{display:flex;gap:12px;border-radius:20px;padding:14px 16px;margin-bottom:10px;background:var(--accent-pale)}
+  .alert.warn{background:color-mix(in srgb,#e2a35c 18%,var(--card))}
+  .alert .ai{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--card);font-weight:700;color:var(--accent)}
+  .alert.warn .ai{color:#c07a2c}
+  .alert b{display:block;font-size:14px}
+  .alert span{font-size:13px;color:var(--ink-soft)}
+
+  /* Verhütung */
+  .methods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .method{border:1.5px solid var(--line);background:var(--card);border-radius:18px;padding:14px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+  .method .em{font-size:22px;display:block;margin-bottom:4px}
+  .method b{font-size:15px}
+  .method.active{border:2px solid var(--accent);box-shadow:0 0 0 2px var(--accent-pale)}
+
+  .toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:60;max-width:90vw;text-align:center}
+  .toast.show{opacity:.94}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ONBOARDING -->
+  <section id="page-onboard" class="page hidden">
+    <div class="onb">
+      <button class="link onb-skip" id="onb-skip">Überspringen</button>
+      <div class="onb-slide" id="onb-slide"></div>
+      <div class="onb-dots" id="onb-dots"><i></i><i></i><i></i></div>
+      <button class="btn primary" id="onb-next">Weiter</button>
+    </div>
+  </section>
+
+  <!-- AUTH -->
+  <section id="page-auth" class="page hidden">
+    <div class="auth-wrap">
+      <div class="auth-brand">
+        <div class="moon"></div>
+        <div class="serif logo">MÉLUNE</div>
+        <p class="muted">Dein Zyklus. Deine Farben. Dein Rhythmus.</p>
+      </div>
+      <div class="card" id="auth-step1">
+        <div class="seg" style="margin-bottom:18px">
+          <button id="seg-register" class="on">Registrieren</button>
+          <button id="seg-login">Anmelden</button>
+        </div>
+        <form id="form-auth" novalidate>
+          <div class="field" id="f-name"><label for="a-name">Vorname</label><input class="input" id="a-name" autocomplete="given-name"></div>
+          <div class="field"><label for="a-mail">E-Mail</label><input class="input" id="a-mail" type="email" autocomplete="email"></div>
+          <div class="field"><label for="a-pw">Passwort</label><input class="input" id="a-pw" type="password" autocomplete="new-password" placeholder="mind. 8 Zeichen"></div>
+          <label class="check" id="f-terms"><input type="checkbox" id="a-terms"><span>Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu. Meine Gesundheitsdaten werden nur für meine Zyklusberechnung genutzt.</span></label>
+          <div class="err" id="a-err"></div>
+          <button class="btn primary" type="submit" id="a-submit">Konto erstellen</button>
+          <p class="small" style="text-align:center;margin-top:14px" id="a-forgot-wrap"><button type="button" class="link" id="a-forgot">Passwort vergessen?</button></p>
+        </form>
+      </div>
+      <div class="card hidden" id="auth-step2">
+        <div class="steps"><i></i><i></i></div>
+        <h2 class="serif" style="margin:0 0 4px;font-size:26px;line-height:1.2">Erzähl uns von deinem Zyklus ♡</h2>
+        <p class="muted" style="margin-bottom:16px">Damit MÉLUNE deine Phasen berechnen kann. Du kannst das jederzeit ändern.</p>
+        <div class="field"><label for="c-last">Erster Tag deiner letzten Periode</label><input class="input" id="c-last" type="date"></div>
+        <div class="grid2">
+          <div class="field"><label for="c-len">Zykluslänge (Tage)</label><input class="input" id="c-len" type="number" min="18" max="45" value="28"></div>
+          <div class="field"><label for="c-per">Periodendauer (Tage)</label><input class="input" id="c-per" type="number" min="1" max="10" value="5"></div>
+        </div>
+        <button class="btn primary" id="c-save">Los geht's</button>
+        <button class="btn mt10" id="c-skip">Später ausfüllen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section id="page-home" class="page hidden">
+    <header class="htop">
+      <div><div class="serif hbrand">MÉLUNE</div><div class="htag">Dein Zyklus · Dein Gefühl</div></div>
+      <div class="hbtns">
+        <button class="icon-btn" id="h-to-cal" aria-label="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></button>
+        <button class="icon-btn" id="h-to-settings" aria-label="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="eyebrow" style="margin:6px 4px 6px">Dein Körper · Dein Rhythmus</div>
+    <h1 class="serif" style="padding:0 4px 4px">Schön, dass du da bist ♡</h1>
+    <p class="muted" style="padding:0 4px 18px">Ein kleiner Moment nur für dich.</p>
+
+    <div class="duo">
+      <div class="card mini">
+        <div class="eyebrow">Nächster Eisprung</div>
+        <div class="serif big" id="h-next-ovu">–</div>
+        <div class="small">Voraussichtlich · Schätzung</div>
+      </div>
+      <div class="card mini">
+        <div class="eyebrow">Nächste Periode</div>
+        <div class="serif big" id="h-next-period">–</div>
+        <div class="small">Voraussichtlich · Schätzung</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Deine aktuelle Phase</div>
+      <div class="serif" style="font-size:26px;line-height:1.2" id="h-phase-name">–</div>
+      <p class="muted" style="margin-top:4px" id="h-phase">–</p>
+      <div class="phases"><div data-hph="0"></div><div data-hph="1"></div><div data-hph="2"></div><div data-hph="3"></div></div>
+      <div class="phase-prog"><i id="h-prog"></i></div>
+      <p class="small disclaimer">Schätzung auf Basis deiner Einträge – keine sichere Verhütungsmethode.</p>
+    </div>
+
+    <h2 class="serif">Dein Zyklus im Überblick</h2>
+    <div class="duo">
+      <div class="card mini">
+        <div class="eyebrow">Durchschnittlicher Zyklus</div>
+        <div class="serif big" id="h-avg-len">–</div>
+        <div class="small" id="h-avg-len-src">Basierend auf deinen Einträgen</div>
+      </div>
+      <div class="card mini">
+        <div class="eyebrow">Periodendauer</div>
+        <div class="serif big" id="h-avg-per">–</div>
+        <div class="small">Durchschnittlich</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Wie geht es dir heute?</div>
+      <p class="muted">Nimm dir einen Moment für dich.</p>
+      <div class="moods" id="h-moods"></div>
+      <p class="small center" id="h-mood-txt" style="min-height:18px;margin-top:8px"></p>
+    </div>
+
+  </section>
+
+  <!-- KALENDER -->
+  <section id="page-kalender" class="page hidden">
+    <h1 class="serif">Kalender</h1>
+    <div class="card">
+      <div class="cal-head">
+        <button class="cal-nav" id="cal-prev" aria-label="Vorheriger Monat">‹</button>
+        <div class="serif" id="cal-title"></div>
+        <button class="cal-nav" id="cal-next" aria-label="Nächster Monat">›</button>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>Periode</span>
+        <span><i style="border:2px dashed var(--accent)"></i>Erwartet</span>
+        <span><i style="background:var(--fertile-soft)"></i>Fruchtbar</span>
+        <span><i style="background:var(--fertile)"></i>Eisprung</span>
+      </div>
+    </div>
+    <p class="muted center" style="padding:0 12px">Tippe auf einen Tag, um deine Periode ein- oder auszutragen.</p>
+  </section>
+
+  <!-- MY BODY -->
+  <section id="page-body" class="page hidden">
+    <h1 class="serif">My Body</h1>
+    <div id="b-alerts"></div>
+    <div id="h-reminders"></div>
+    <div class="card impuls">
+      <div class="eyebrow">Dein Impuls für heute</div>
+      <div class="serif" id="h-impuls"></div>
+    </div>
+    <div class="card hidden" id="h-contra"></div>
+    <div class="card">
+      <div class="eyebrow">Heute</div>
+      <div class="track" style="display:block">
+        <div class="track" style="margin:0">
+          <div class="lbl"><b>Wasser</b><span id="h-water-txt">0 von 8 Gläsern</span></div>
+        </div>
+        <div class="drops" id="h-drops"></div>
+      </div>
+      <div class="track">
+        <div class="lbl"><b>Schlaf</b><span>letzte Nacht</span></div>
+        <div class="stepper"><button id="sl-minus" aria-label="Weniger">−</button><b id="h-sleep">–</b><button id="sl-plus" aria-label="Mehr">+</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Deine Phase gerade</div>
+      <div class="serif" style="font-size:28px" id="b-phase">–</div>
+      <div class="phases"><div data-ph="0"></div><div data-ph="1"></div><div data-ph="2"></div><div data-ph="3"></div></div>
+      <div class="phase-names"><span>Periode</span><span>Follikel</span><span>Eisprung</span><span>Luteal</span></div>
+      <p class="muted" style="margin-top:14px" id="b-tip"></p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Deine Statistik</div>
+      <div class="stats" style="margin-top:0">
+        <div class="stat"><b id="b-len">–</b><span class="small">Ø Zyklus</span></div>
+        <div class="stat"><b id="b-per">–</b><span class="small">Ø Periode</span></div>
+        <div class="stat"><b id="b-count">0</b><span class="small">Zyklen</span></div>
+      </div>
+      <div id="b-chart-wrap">
+        <p class="small" style="margin-top:18px">Länge deiner letzten Zyklen</p>
+        <div class="bars" id="b-bars"></div>
+        <div class="bar-labels" id="b-bar-labels"></div>
+      </div>
+      <p class="muted" id="b-empty" style="margin-top:16px">Trag deine Perioden im Kalender ein. Ab zwei Perioden siehst du hier deine Zykluslängen.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Diese Woche</div>
+      <div class="stats" style="margin-top:0;grid-template-columns:1fr 1fr">
+        <div class="stat"><b id="b-water">–</b><span class="small">Ø Gläser Wasser</span></div>
+        <div class="stat"><b id="b-sleep">–</b><span class="small">Ø Stunden Schlaf</span></div>
+      </div>
+    </div>
+    <p class="small center" style="padding:4px 16px 0">MÉLUNE ersetzt keine ärztliche Beratung.</p>
+  </section>
+
+  <!-- PROFIL -->
+  <section id="page-profil" class="page hidden">
+    <h1 class="serif">Profil</h1>
+    <div class="card">
+      <div class="profile-head">
+        <div class="avatar" id="p-initial">A</div>
+        <div><div class="serif name" id="p-name">Alysha</div><div class="muted" id="p-since">Mitglied seit 2026</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="p-len">28</b><span class="small">Ø Zyklus</span></div>
+        <div class="stat"><b id="p-per">5</b><span class="small">Ø Periode</span></div>
+        <div class="stat"><b id="p-day">–</b><span class="small">Zyklustag</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+        Partner-Modus <span class="pill">Optional</span>
+      </div>
+      <p class="muted" style="margin-top:8px">Lade deinen Partner ein und teile ausgewählte Zyklusinformationen. Du entscheidest jederzeit, was sichtbar ist.</p>
+      <button class="btn" data-soon>+ Partner einladen</button>
+    </div>
+
+    <h2 class="serif">Weitere Einstellungen</h2>
+    <div class="card list">
+      <button class="item" data-open="konto">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5z"/></svg></span>
+        <span><div class="t">Mein Konto</div><div class="s">Kontodaten, Zyklus und Abmelden</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-open="erinnerungen">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+        <span><div class="t">Erinnerungen</div><div class="s">Periode, Eisprung und Pille</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-open="verhuetung">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="16" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="M9.5 8.3l5 7.4"/></svg></span>
+        <span><div class="t">Verhütung</div><div class="s" id="contra-sub">Methode wählen</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-open="sperre">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span>
+        <span><div class="t">App-Sperre</div><div class="s" id="lock-sub">Mit PIN schützen</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-soon>
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><circle cx="8" cy="13.5" r="3.2"/><circle cx="16" cy="13.5" r="3.2"/><path d="M12 16.5V21"/></svg></span>
+        <span><div class="t">Schwangerschaftsmodus</div><div class="s">Optional aktivieren</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-open="darstellung">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="5.5" fill="currentColor"/></svg></span>
+        <span><div class="t">Darstellung</div><div class="s">Design und Erscheinungsbild</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-soon>
+        <span class="ic" style="font-size:18px">?</span>
+        <span><div class="t">Hilfe &amp; Support</div><div class="s">Fragen und Kontakt</div></span><span class="chev">›</span>
+      </button>
+      <button class="item" data-soon>
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>
+        <span><div class="t">Über MÉLUNE</div><div class="s">Version und Informationen</div></span><span class="chev">›</span>
+      </button>
+    </div>
+    <div class="brand"><div class="serif">MÉLUNE</div><div class="small">Version 0.5 · Prototyp</div></div>
+  </section>
+
+  <!-- DARSTELLUNG -->
+  <section id="page-darstellung" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Darstellung</h1></div>
+    <div class="card">
+      <div class="eyebrow">Modus</div>
+      <div class="seg" id="mode-seg">
+        <button data-mode="light">Hell</button>
+        <button data-mode="dark">Dunkel</button>
+        <button data-mode="system">Automatisch</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Deine persönliche Farbwelt</div>
+      <h2 class="serif" style="margin:0;font-size:25px;line-height:1.2">Wähle deine MÉLUNE-Farben ♡</h2>
+      <p class="muted" style="margin-top:6px">Die Farbwelt verändert den gesamten Look der App.</p>
+      <div class="themes" id="themes"></div>
+      <label class="small" for="hex">Eigene Akzentfarbe (Hex-Code)</label>
+      <input class="input" id="hex" value="#B77E8B" autocomplete="off" spellcheck="false">
+      <button class="btn mt10" id="apply-hex">Eigene Farbe übernehmen</button>
+    </div>
+  </section>
+
+  <!-- ERINNERUNGEN -->
+  <section id="page-erinnerungen" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Erinnerungen</h1></div>
+    <div class="card" style="padding-top:8px;padding-bottom:8px">
+      <div class="trow"><div><div class="t">Periode kommt bald</div><div class="s">2 Tage vorher erinnern</div></div><label class="switch"><input type="checkbox" data-rem="period"><span></span></label></div>
+      <div class="trow"><div><div class="t">Fruchtbare Tage &amp; Eisprung</div><div class="s">Am Anfang der fruchtbaren Tage</div></div><label class="switch"><input type="checkbox" data-rem="ovu"><span></span></label></div>
+      <div class="trow"><div><div class="t">Pille</div><div class="s">Jeden Tag zur gleichen Zeit</div></div><label class="switch"><input type="checkbox" data-rem="pill"><span></span></label></div>
+      <div class="trow" id="pill-time-row"><div class="t" style="font-weight:500">Uhrzeit</div><input class="input time" type="time" id="pill-time" value="20:00"></div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Benachrichtigungen</div>
+      <p class="muted">Damit MÉLUNE dich auch erinnern kann, wenn die App geschlossen ist, musst du Benachrichtigungen erlauben.</p>
+      <button class="btn" id="notif-btn">Benachrichtigungen erlauben</button>
+    </div>
+  </section>
+
+  <!-- APP-SPERRE -->
+  <section id="page-sperre" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">App-Sperre</h1></div>
+    <div class="card" style="padding-top:8px;padding-bottom:8px">
+      <div class="trow"><div><div class="t">Mit PIN sperren</div><div class="s">Beim Öffnen der App nach PIN fragen</div></div><label class="switch"><input type="checkbox" id="lock-toggle"><span></span></label></div>
+    </div>
+    <div class="card" id="lock-actions">
+      <p class="muted">Deine Zyklusdaten sind privat. Mit der App-Sperre kann niemand sie sehen, auch wenn jemand dein Handy in der Hand hat.</p>
+      <button class="btn" id="lock-change">PIN ändern</button>
+      <button class="btn mt10" id="lock-now">Jetzt sperren</button>
+    </div>
+  </section>
+
+  <!-- VERHÜTUNG -->
+  <section id="page-verhuetung" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Verhütung</h1></div>
+    <div class="card">
+      <div class="eyebrow">Deine Methode</div>
+      <div class="methods" id="methods"></div>
+    </div>
+    <div class="card hidden" id="contra-form">
+      <div class="field"><label for="ct-start" id="ct-start-lbl">Start</label><input class="input" id="ct-start" type="date"></div>
+      <div id="ct-pilltype">
+        <div class="field"><label>Packungsart</label>
+          <div class="seg" id="ct-type"><button data-t="21">21 + 7 Pause</button><button data-t="28">28 durchgehend</button></div>
+        </div>
+      </div>
+      <p class="muted" id="ct-hint"></p>
+      <button class="btn primary" id="ct-save">Speichern</button>
+    </div>
+  </section>
+
+  <!-- KONTO -->
+  <section id="page-konto" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Mein Konto</h1></div>
+    <div class="card">
+      <div class="eyebrow">Kontodaten</div>
+      <div class="kv"><span>Vorname</span><span id="k-name"></span></div>
+      <div class="kv"><span>E-Mail</span><span id="k-mail"></span></div>
+      <div class="kv"><span>Mitglied seit</span><span id="k-since"></span></div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Zyklus</div>
+      <div class="field"><label for="k-last">Erster Tag der letzten Periode</label><input class="input" id="k-last" type="date"></div>
+      <div class="grid2">
+        <div class="field"><label for="k-len">Zykluslänge</label><input class="input" id="k-len" type="number" min="18" max="45"></div>
+        <div class="field"><label for="k-per">Periodendauer</label><input class="input" id="k-per" type="number" min="1" max="10"></div>
+      </div>
+      <button class="btn" id="k-save">Speichern</button>
+    </div>
+    <button class="btn" id="k-logout">Abmelden</button>
+    <button class="btn danger mt10" id="k-delete">Konto löschen</button>
+  </section>
+</div>
+
+<!-- PIN Overlay -->
+<div class="lock hidden" id="lock">
+  <div class="moon"></div>
+  <div class="serif" style="font-size:28px" id="lock-title">PIN eingeben</div>
+  <div class="small" id="lock-sub2">&nbsp;</div>
+  <div class="pin-dots" id="pin-dots"><i></i><i></i><i></i><i></i></div>
+  <div class="keypad" id="keypad"></div>
+</div>
+
+<nav>
+  <div class="inner">
+    <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11l8-6 8 6v9H4z"/></svg>Home</button>
+    <button data-tab="kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="5" width="16" height="15"/><path d="M4 10h16M9 5v15M14 5v15M4 15h16"/></svg>Kalender</button>
+    <button class="plus" data-soon><span class="fab">+</span>Eintragen</button>
+    <button data-tab="body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>My Body</button>
+    <button data-tab="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5z"/></svg>Profil</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d }catch(e){ return d } },
+    set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} },
+    del(k){ try{ localStorage.removeItem(k) }catch(e){} }
+  };
+  let tt; function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("show"),2000) }
+
+  /* ================= Farben & Dunkelmodus ================= */
+  const THEMES = {
+    "Rosé Dreams": {accent:"#b77e8b", soft:"#ead8dc", pale:"#f3e7e9", bg:"#f6efed", card:"#fdf9f8", line:"#ecdfdc"},
+    "Lavender":    {accent:"#9a86c4", soft:"#e2dcf0", pale:"#efebf7", bg:"#f3f1f8", card:"#fcfbfe", line:"#e4e0ee"},
+    "Sage":        {accent:"#86a07f", soft:"#dbe5d6", pale:"#ebf1e8", bg:"#f1f4ef", card:"#fbfcfa", line:"#e0e7dc"},
+    "Champagne":   {accent:"#b09a68", soft:"#ebe3cd", pale:"#f4efe2", bg:"#f7f3ea", card:"#fdfbf6", line:"#ebe4d4"},
+    "Baby Blue":   {accent:"#7fa3c4", soft:"#d8e4f0", pale:"#e9f0f7", bg:"#f0f4f8", card:"#fbfcfe", line:"#dfe6ee"},
+    "Peach":       {accent:"#cf967a", soft:"#f0ddd2", pale:"#f7ebe4", bg:"#f8f1ed", card:"#fefaf8", line:"#efe1d9"}
+  };
+  let look = store.get("melune-theme", {}) || {};
+  if(!look.name && !look.hex) look.name = "Rosé Dreams";
+  if(look.name && !THEMES[look.name]) look.name = "Rosé Dreams";
+  look.mode = look.mode || "light";
+  const mq = matchMedia("(prefers-color-scheme: dark)");
+
+  function blend(a,b,t){ // a→b um t
+    const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)), x=p(a), y=p(b);
+    return "#"+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,"0")).join("");
+  }
+  function palette(){
+    const accent = look.name ? THEMES[look.name].accent : look.hex;
+    const dark = look.mode==="dark" || (look.mode==="system" && mq.matches);
+    let t;
+    if(dark){
+      const base = blend("#1c1719", accent, .06), card = blend("#272023", accent, .08);
+      t = {accent:blend(accent,"#ffffff",.08), bg:base, card, nav:card, line:blend(card,accent,.18),
+           soft:blend(card,accent,.38), pale:blend(card,accent,.16), ink:"#f2e8ea", inkSoft:"#b9a9ae",
+           fertile:"#7fa08b", fertileSoft:"#33433a"};
+    } else if(look.name){
+      const th = THEMES[look.name];
+      t = {...th, nav:th.card, ink:"#5e4a50", inkSoft:"#8a7a7e", fertile:"#8fae9a", fertileSoft:"#dde9e0"};
+    } else {
+      t = {accent, soft:blend(accent,"#ffffff",.7), pale:blend(accent,"#ffffff",.84), bg:blend(accent,"#ffffff",.9),
+           card:blend(accent,"#ffffff",.97), line:blend(accent,"#ffffff",.82), ink:"#5e4a50", inkSoft:"#8a7a7e",
+           fertile:"#8fae9a", fertileSoft:"#dde9e0"};
+      t.nav = t.card;
+    }
+    return {t, dark};
+  }
+  function paint(){
+    const {t,dark} = palette(), r = document.documentElement.style;
+    const map = {accent:"--accent",soft:"--accent-soft",pale:"--accent-pale",bg:"--bg",card:"--card",nav:"--nav",line:"--line",ink:"--ink",inkSoft:"--ink-soft",fertile:"--fertile",fertileSoft:"--fertile-soft"};
+    for(const k in map) r.setProperty(map[k], t[k]);
+    document.body.classList.toggle("dark", dark);
+    document.querySelectorAll("#mode-seg button").forEach(b=>b.classList.toggle("on", b.dataset.mode===look.mode));
+    renderThemes();
+  }
+  function saveLook(){ store.set("melune-theme", look); paint(); }
+  mq.addEventListener && mq.addEventListener("change", ()=>{ if(look.mode==="system") paint(); });
+  document.querySelectorAll("#mode-seg button").forEach(b=>b.onclick=()=>{ look.mode=b.dataset.mode; saveLook(); });
+
+  function renderThemes(){
+    const box = $("themes"); box.innerHTML = "";
+    for(const [name,t] of Object.entries(THEMES)){
+      const b = document.createElement("button");
+      const on = name===look.name;
+      b.className = "theme"+(on?" active":"");
+      b.innerHTML = `<div class="dots"><i style="background:${t.pale}"></i><i style="background:${t.soft}"></i><i style="background:${t.accent}"></i></div><span>${name}${on?" ✓":""}</span>`;
+      b.onclick = () => { look.name=name; delete look.hex; $("hex").value=t.accent.toUpperCase(); saveLook(); };
+      box.appendChild(b);
+    }
+  }
+  $("apply-hex").onclick = () => {
+    let v = $("hex").value.trim();
+    if(!v.startsWith("#")) v = "#"+v;
+    if(/^#[0-9a-fA-F]{3}$/.test(v)) v = "#"+[...v.slice(1)].map(c=>c+c).join("");
+    if(!/^#[0-9a-fA-F]{6}$/.test(v)) return toast("Bitte einen gültigen Hex-Code eingeben");
+    $("hex").value = v.toUpperCase();
+    look.hex = v.toLowerCase(); delete look.name; saveLook(); toast("Eigene Farbe übernommen ♡");
+  };
+  $("hex").value = (look.name ? THEMES[look.name].accent : look.hex).toUpperCase();
+
+  /* ================= Datum-Helfer ================= */
+  const DAY = 864e5;
+  const ds = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const pd = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+  const add = (d,n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+  const diff = (a,b) => Math.round((pd(ds(a)) - pd(ds(b)))/DAY);
+  const today = () => pd(ds(new Date()));
+  const fmt = d => d.toLocaleDateString("de-DE",{day:"numeric",month:"short"});
+
+  /* ================= Accounts ================= */
+  let users = store.get("melune-users", {});
+  let session = store.get("melune-session", null);
+  let mode = "register";
+  const me = () => session && users[session];
+  const saveUsers = () => store.set("melune-users", users);
+  async function hash(s){
+    try{ const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("melune:"+s));
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+    catch(e){ let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))|0; return "x"+h; }
+  }
+  function ensure(u){
+    u.periods = u.periods || [];
+    u.reminders = u.reminders || {period:true, ovu:false, pill:false, pillTime:"20:00"};
+    u.daily = u.daily || {};
+    u.contra = u.contra || {method:"none"};
+    u.pillTaken = u.pillTaken || {};
+    if(u.cycle && u.cycle.last && !u.periods.length){
+      for(let i=0;i<u.cycle.per;i++) u.periods.push(ds(add(pd(u.cycle.last),i)));
+    }
+    return u;
+  }
+
+  function setMode(m){
+    mode = m;
+    $("seg-register").classList.toggle("on", m==="register");
+    $("seg-login").classList.toggle("on", m==="login");
+    $("f-name").classList.toggle("hidden", m==="login");
+    $("f-terms").classList.toggle("hidden", m==="login");
+    $("a-forgot-wrap").classList.toggle("hidden", m==="register");
+    $("a-pw").autocomplete = m==="login" ? "current-password" : "new-password";
+    $("a-submit").textContent = m==="login" ? "Anmelden" : "Konto erstellen";
+    $("a-err").textContent = "";
+  }
+  $("seg-register").onclick = () => setMode("register");
+  $("seg-login").onclick = () => setMode("login");
+  $("a-forgot").onclick = () => toast("Link zum Zurücksetzen kommt mit dem echten Server");
+
+  $("form-auth").onsubmit = async e => {
+    e.preventDefault();
+    const name = $("a-name").value.trim(), mail = $("a-mail").value.trim().toLowerCase(), pw = $("a-pw").value;
+    const err = m => $("a-err").textContent = m;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return err("Bitte gib eine gültige E-Mail ein.");
+    if(mode==="register"){
+      if(!name) return err("Bitte gib deinen Vornamen ein.");
+      if(pw.length<8) return err("Das Passwort braucht mindestens 8 Zeichen.");
+      if(!$("a-terms").checked) return err("Bitte stimme den Bedingungen zu.");
+      if(users[mail]) return err("Es gibt schon ein Konto mit dieser E-Mail. Melde dich an.");
+      users[mail] = ensure({name, email:mail, pw:await hash(pw), since:new Date().toISOString(), cycle:null, pin:null});
+      saveUsers(); session = mail; store.set("melune-session", mail);
+      $("auth-step1").classList.add("hidden"); $("auth-step2").classList.remove("hidden");
+      $("c-last").value = ds(add(today(),-11));
+    } else {
+      const u = users[mail];
+      if(!u || u.pw !== await hash(pw)) return err("E-Mail oder Passwort stimmt nicht.");
+      session = mail; store.set("melune-session", mail);
+      unlocked = true; enterApp(); toast("Schön, dass du wieder da bist ♡");
+    }
+  };
+  function saveCycle(u, last, len, per){
+    const old = u.cycle;
+    u.cycle = {last, len:Math.min(45,Math.max(18,+len||28)), per:Math.min(10,Math.max(1,+per||5))};
+    if(last && (!old || old.last!==last)){
+      const set = new Set(u.periods);
+      for(let i=0;i<u.cycle.per;i++) set.add(ds(add(pd(last),i)));
+      u.periods = [...set].sort();
+    }
+    saveUsers();
+  }
+  $("c-save").onclick = () => { saveCycle(me(), $("c-last").value, $("c-len").value, $("c-per").value); unlocked=true; enterApp(); toast("Willkommen bei MÉLUNE ♡"); };
+  $("c-skip").onclick = () => { unlocked=true; enterApp(); toast("Willkommen bei MÉLUNE ♡"); };
+
+  function logout(){
+    session = null; store.del("melune-session");
+    $("form-auth").reset(); setMode("login");
+    $("auth-step2").classList.add("hidden"); $("auth-step1").classList.remove("hidden");
+    $("lock").classList.add("hidden");
+    show("auth");
+  }
+  function enterApp(){ ensure(me()); saveUsers(); renderAll(); show("home"); }
+
+  /* ================= Zyklus-Berechnung ================= */
+  function analyse(u){
+    const settings = u.cycle || {len:28, per:5};
+    const days = [...new Set(u.periods)].sort();
+    const set = new Set(days);
+    const starts = [], lengths = [];
+    for(const d of days){
+      if(!set.has(ds(add(pd(d),-1)))){ starts.push(d); let n=1; while(set.has(ds(add(pd(d),n)))) n++; lengths.push(n); }
+    }
+    const cycles = [];
+    for(let i=1;i<starts.length;i++){ const l = diff(pd(starts[i]), pd(starts[i-1])); if(l>=15 && l<=60) cycles.push({start:starts[i-1], len:l}); }
+    const avgLen = cycles.length ? Math.round(cycles.reduce((a,c)=>a+c.len,0)/cycles.length) : settings.len;
+    const avgPer = lengths.length ? Math.round(lengths.reduce((a,b)=>a+b,0)/lengths.length) : settings.per;
+    const lastStart = starts.length ? pd(starts[starts.length-1]) : null;
+    let day=null, nextPeriod=null, ovu=null, phase=null, phaseIdx=null, late=0, stale=false;
+    if(lastStart && diff(today(),lastStart)+1 - avgLen > 60) stale = true;
+    if(lastStart && !stale){
+      const t = today();
+      day = diff(t,lastStart)+1;
+      late = Math.max(0, day - avgLen);
+      let cycleStart = lastStart;
+      nextPeriod = add(cycleStart, avgLen);
+      if(nextPeriod < t) nextPeriod = t;
+      ovu = add(cycleStart, avgLen-14);
+      if(ovu < add(t,-1)) ovu = add(nextPeriod, avgLen-14);
+      const ovuDay = avgLen-14;
+      if(day<=avgPer){ phase="Menstruation"; phaseIdx=0; }
+      else if(day<ovuDay-1){ phase="Follikelphase"; phaseIdx=1; }
+      else if(day<=ovuDay+1){ phase="Eisprung & fruchtbare Tage"; phaseIdx=2; }
+      else { phase="Lutealphase"; phaseIdx=3; }
+    }
+    return {set, starts, lengths, cycles, avgLen, avgPer, day, nextPeriod, ovu, phase, phaseIdx, late, stale};
+  }
+  const TIPS = [
+    "Deine Energie ist jetzt oft niedriger. Gönn dir Ruhe, Wärme und eisenreiches Essen.",
+    "Östrogen steigt und viele fühlen sich jetzt energiegeladen und kreativ. Gute Zeit für neue Projekte.",
+    "Deine fruchtbarste Zeit. Viele fühlen sich jetzt besonders selbstbewusst und gesellig.",
+    "Progesteron steigt. Heißhunger und Stimmungsschwankungen sind normal. Sei lieb zu dir."
+  ];
+
+  /* ================= Hinweise (Unregelmäßigkeiten) ================= */
+  function insights(a){
+    const out = [];
+    if(a.stale) out.push(["info","Keine aktuellen Einträge","Trag deine letzte Periode im Kalender ein, damit die Vorhersagen wieder stimmen."]);
+    if(a.late>0 && a.late<=7) out.push(["info","Deine Periode ist "+a.late+(a.late===1?" Tag":" Tage")+" später als erwartet","Kleine Verspätungen sind normal, zum Beispiel durch Stress, Reisen oder Krankheit."]);
+    if(a.late>7) out.push(["warn","Deine Periode ist "+a.late+" Tage überfällig","Wenn du schwanger sein könntest, mach einen Test. Sonst sprich am besten mit deiner Frauenärztin."]);
+    if(a.cycles.length>=3){
+      const ls = a.cycles.slice(-6).map(c=>c.len), mn = Math.min(...ls), mx = Math.max(...ls);
+      if(mx-mn>=8) out.push(["warn","Deine Zyklen schwanken stark","Sie waren zwischen "+mn+" und "+mx+" Tage lang. Das kann normal sein, sprich es aber bei deiner nächsten Untersuchung an."]);
+    }
+    if(a.cycles.length>=2 && (a.avgLen<21 || a.avgLen>35)) out.push(["warn","Ungewöhnliche Zykluslänge","Dein Durchschnitt liegt bei "+a.avgLen+" Tagen. Üblich sind 21 bis 35 Tage. Lass das ärztlich abklären."]);
+    if(a.lengths.length>=2 && a.avgPer>7) out.push(["warn","Lange Periode","Deine Periode dauert im Schnitt "+a.avgPer+" Tage. Ab mehr als 7 Tagen lieber ärztlich abklären."]);
+    return out;
+  }
+  function drawAlerts(box, list){
+    box.innerHTML = list.map(([k,t,s])=>`<div class="alert ${k}"><div class="ai">${k==="warn"?"!":"i"}</div><div><b>${t}</b><span>${s}</span></div></div>`).join("");
+  }
+
+  /* ================= Tagesimpuls ================= */
+  const IMPULSE = [
+    ["Wärme hilft gegen Krämpfe. Eine Wärmflasche und ein Tee sind heute genau richtig.",
+     "Dein Körper leistet gerade viel. Ein früher Abend ist kein Luxus, sondern Pflege.",
+     "Eisenreiches Essen wie Linsen, Spinat oder Haferflocken tut dir jetzt gut.",
+     "Sanfte Bewegung wie Spazierengehen oder Yoga kann Schmerzen lindern."],
+    ["Deine Energie steigt. Ein guter Tag, um etwas Neues anzufangen.",
+     "Jetzt fällt Lernen oft leichter. Nimm dir etwas vor, das dich neugierig macht.",
+     "Perfekter Moment für ein intensiveres Workout.",
+     "Plan heute etwas mit Freundinnen. Du bist jetzt oft besonders offen."],
+    ["Du strahlst gerade. Ein guter Tag für wichtige Gespräche.",
+     "Viele fühlen sich jetzt besonders selbstbewusst. Nutz es für dich.",
+     "Trink heute extra viel Wasser, dein Körper arbeitet auf Hochtouren.",
+     "Deine fruchtbarsten Tage. Denk an deine Verhütung, falls du nicht schwanger werden willst."],
+    ["Heißhunger ist normal. Dunkle Schokolade und Nüsse sind gute Freunde.",
+     "Du darfst heute langsamer machen. Weniger To-dos, mehr Pausen.",
+     "Magnesium kann gegen PMS helfen, zum Beispiel aus Bananen oder Kürbiskernen.",
+     "Wenn die Stimmung schwankt, schreib auf, was dich beschäftigt. Das hilft oft."]
+  ];
+  function impulse(a){
+    const n = Math.floor(today()/DAY);
+    if(a.phaseIdx==null) return "Trag deine Periode im Kalender ein, dann bekommst du jeden Tag einen Impuls passend zu deiner Phase.";
+    const list = IMPULSE[a.phaseIdx]; return list[n % list.length];
+  }
+
+  /* ================= Verhütung ================= */
+  const METHODS = {
+    none:{em:"○",name:"Keine"}, pill:{em:"⬭",name:"Pille"}, ring:{em:"◯",name:"Vaginalring"},
+    patch:{em:"▢",name:"Pflaster"}, iud:{em:"⟂",name:"Spirale"}, condom:{em:"♡",name:"Kondom"}
+  };
+  function contraStatus(u){
+    const c = u.contra; if(!c || !c.start) return null;
+    const n = diff(today(), pd(c.start)); if(n<0) return {title:METHODS[c.method].name, text:"Startet am "+fmt(pd(c.start))};
+    const pos = n % 28, packStart = add(pd(c.start), n - pos);
+    if(c.method==="pill"){
+      const total = c.type==="28" ? 28 : 21, pause = c.type!=="28" && pos>=21;
+      return {kind:"pill", pos, total, pause, packStart, pack: Math.floor(n/28)+1,
+        title: pause ? "Pillenpause · Tag "+(pos-20)+" von 7" : "Pille "+(pos+1)+" von "+total,
+        text: pause ? "Neue Packung am "+fmt(add(packStart,28)) : "Packung "+(Math.floor(n/28)+1)};
+    }
+    if(c.method==="ring") return pos<21 ? {title:"Ring ist drin · Tag "+(pos+1)+" von 21", text:"Ring raus am "+fmt(add(packStart,21))}
+                                          : {title:"Ringpause · Tag "+(pos-20)+" von 7", text:"Neuen Ring einsetzen am "+fmt(add(packStart,28))};
+    if(c.method==="patch"){ const w = Math.floor(pos/7);
+      return w<3 ? {title:"Pflaster Woche "+(w+1)+" von 3", text:"Nächster Wechsel am "+fmt(add(packStart,(w+1)*7))}
+                 : {title:"Pflasterpause", text:"Neues Pflaster am "+fmt(add(packStart,28))}; }
+    if(c.method==="iud"){ let next = pd(c.start); while(next<=today()) next = new Date(next.getFullYear()+1,next.getMonth(),next.getDate());
+      return {title:"Spirale seit "+pd(c.start).toLocaleDateString("de-DE",{month:"long",year:"numeric"}), text:"Nächste Kontrolle ca. "+next.toLocaleDateString("de-DE",{month:"long",year:"numeric"})}; }
+    return null;
+  }
+  function renderContraCard(){
+    const u = me(), box = $("h-contra"), st = contraStatus(u);
+    if(!st){ box.classList.add("hidden"); return; }
+    box.classList.remove("hidden");
+    let html = `<div class="eyebrow">Verhütung</div><div class="pillrow"><div><div style="font-weight:700;font-size:16px">${st.title}</div><div class="small">${st.text}</div></div></div>`;
+    if(st.kind==="pill"){
+      const len = u.contra.type==="28"?28:28;
+      html += `<div class="pillbar">`+Array.from({length:len},(_,i)=>{
+        const isPause = u.contra.type!=="28" && i>=21;
+        const k = ds(add(st.packStart,i));
+        const cls = isPause ? "pause" : (u.pillTaken[k] ? "done" : "");
+        return `<i class="${cls}${i===st.pos?" now":""}"></i>`;}).join("")+`</div>`;
+      if(!st.pause){
+        const taken = !!u.pillTaken[ds(today())];
+        html += `<button class="btn ${taken?"taken":"primary"}" id="pill-take">${taken?"Heute genommen ✓":"Pille heute genommen"}</button>`;
+      }
+    }
+    box.innerHTML = html;
+    const b = $("pill-take");
+    if(b) b.onclick = () => { const k = ds(today()); if(u.pillTaken[k]) delete u.pillTaken[k]; else { u.pillTaken[k]=true; toast("Super, eingetragen ♡"); } saveUsers(); renderHome(); };
+  }
+  let ctDraft = null;
+  function renderVerhuetung(){
+    const u = me(); ctDraft = ctDraft || {...u.contra};
+    $("methods").innerHTML = Object.entries(METHODS).map(([k,m])=>`<button class="method${ctDraft.method===k?" active":""}" data-m="${k}"><span class="em">${m.em}</span><b>${m.name}</b></button>`).join("");
+    document.querySelectorAll("#methods .method").forEach(b=>b.onclick=()=>{ ctDraft.method=b.dataset.m; if(!["pill","ring","patch","iud"].includes(ctDraft.method)) saveContra(); renderVerhuetung(); });
+    const needs = ["pill","ring","patch","iud"].includes(ctDraft.method);
+    $("contra-form").classList.toggle("hidden", !needs);
+    $("ct-pilltype").classList.toggle("hidden", ctDraft.method!=="pill");
+    $("ct-start-lbl").textContent = {pill:"Erster Tag der aktuellen Packung", ring:"Tag, an dem der Ring eingesetzt wurde", patch:"Tag des ersten Pflasters", iud:"Tag, an dem die Spirale eingesetzt wurde"}[ctDraft.method] || "";
+    $("ct-start").value = ctDraft.start || ds(today());
+    ctDraft.type = ctDraft.type || "21";
+    document.querySelectorAll("#ct-type button").forEach(b=>b.classList.toggle("on", b.dataset.t===ctDraft.type));
+    $("ct-hint").textContent = {pill:"MÉLUNE zählt deine Pillen mit und erinnert dich jeden Tag. Die Uhrzeit stellst du unter Erinnerungen ein.", ring:"MÉLUNE sagt dir, wann der Ring raus muss und wann ein neuer rein kommt.", patch:"MÉLUNE erinnert dich an den wöchentlichen Pflasterwechsel.", iud:"MÉLUNE erinnert dich an die jährliche Kontrolle."}[ctDraft.method] || "";
+  }
+  document.querySelectorAll("#ct-type button").forEach(b=>b.onclick=()=>{ ctDraft.type=b.dataset.t; renderVerhuetung(); });
+  $("ct-start").onchange = () => { ctDraft.start = $("ct-start").value; };
+  function saveContra(){
+    const u = me(); u.contra = {...ctDraft};
+    if(u.contra.method==="pill") u.reminders.pill = true;
+    saveUsers(); renderAll(); toast("Gespeichert ♡");
+  }
+  $("ct-save").onclick = () => { ctDraft.start = $("ct-start").value || ds(today()); saveContra(); show("profil"); };
+
+  /* ================= Stimmung ================= */
+  const PHASE_TXT = ["Zeit für Ruhe und Wärme.","Deine Energie steigt.","Deine fruchtbarsten Tage.","Dein Körper bereitet sich vor."];
+  const MOODS = [["😊","Gut"],["😐","Okay"],["🥰","Verliebt"],["😔","Traurig"],["😣","Gestresst"]];
+  function renderMood(){
+    const u = me(); u.mood = u.mood || {}; const cur = u.mood[ds(today())];
+    $("h-moods").innerHTML = MOODS.map(([e,l],i)=>`<button class="mood${cur===i?" on":""}" data-mood="${i}" aria-label="${l}">${e}</button>`).join("");
+    $("h-mood-txt").textContent = cur!=null ? "Heute: "+MOODS[cur][1]+" · danke, dass du es teilst ♡" : "";
+    document.querySelectorAll("#h-moods .mood").forEach(b=>b.onclick=()=>{ const i=+b.dataset.mood, k=ds(today()); if(u.mood[k]===i) delete u.mood[k]; else u.mood[k]=i; saveUsers(); renderMood(); });
+  }
+  $("h-to-cal").onclick = () => { renderAll(); show("kalender"); };
+  $("h-to-settings").onclick = () => { renderAll(); show("profil"); };
+
+  /* ================= Wasser & Schlaf ================= */
+  const todayData = u => (u.daily[ds(today())] = u.daily[ds(today())] || {water:0, sleep:null});
+  const DROP = '<svg viewBox="0 0 24 28"><path d="M12 2C9 7 4 12 4 18a8 8 0 0 0 16 0c0-6-5-11-8-16z" fill="currentColor"/></svg>';
+  function renderToday(){
+    const u = me(), d = u.daily[ds(today())] || {water:0, sleep:null};
+    $("h-drops").innerHTML = Array.from({length:8},(_,i)=>`<button class="drop${i<d.water?" on":""}" data-i="${i}" aria-label="${i+1} Gläser">${DROP}</button>`).join("");
+    $("h-water-txt").textContent = d.water+" von 8 Gläsern"+(d.water>=8?" · geschafft! 🎉":"");
+    $("h-sleep").textContent = d.sleep==null ? "–" : String(d.sleep).replace(".",",")+" h";
+    document.querySelectorAll("#h-drops .drop").forEach(b=>b.onclick=()=>{
+      const td = todayData(u), i = +b.dataset.i; td.water = (td.water===i+1) ? i : i+1; saveUsers(); renderToday();
+      if(td.water===8) toast("Tagesziel erreicht 💧");
+    });
+  }
+  function stepSleep(dlt){ const td = todayData(me()); td.sleep = Math.min(14, Math.max(0, (td.sleep==null?7:td.sleep) + (td.sleep==null?0:dlt))); saveUsers(); renderToday(); }
+  $("sl-minus").onclick = () => stepSleep(-0.5);
+  $("sl-plus").onclick = () => stepSleep(0.5);
+  function weekAvg(u, key){
+    const vals = [];
+    for(let i=0;i<7;i++){ const d = u.daily[ds(add(today(),-i))]; if(d && d[key]!=null && (key!=="water"||d.water>0)) vals.push(d[key]); }
+    return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1).replace(".",",") : "–";
+  }
+
+  /* ================= Onboarding ================= */
+  const ONB = [
+    ['<div class="moon" style="width:90px;height:90px;margin:0"></div>',"Willkommen bei MÉLUNE","Die Zyklus-App, die sich nach dir richtet. Nicht umgekehrt."],
+    ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="9" cy="14.5" r="1.3" fill="currentColor"/><circle cx="15" cy="14.5" r="1.3"/></svg>',"Versteh deinen Körper","MÉLUNE berechnet Periode, fruchtbare Tage und Eisprung und gibt dir jeden Tag einen Impuls passend zu deiner Phase."],
+    ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14v3"/></svg>',"Deine Daten gehören dir","Mit PIN-Sperre, eigenen Farben, Erinnerungen und Verhütungs-Tracker. Alles so, wie du es willst."]
+  ];
+  let onbI = 0;
+  function renderOnb(){
+    const [art,t,p] = ONB[onbI];
+    $("onb-slide").innerHTML = `<div class="onb-art">${art}</div><h1 class="serif">${t}</h1><p>${p}</p>`;
+    [...$("onb-dots").children].forEach((d,i)=>d.classList.toggle("on", i===onbI));
+    $("onb-next").textContent = onbI===ONB.length-1 ? "Los geht's" : "Weiter";
+    $("onb-skip").style.visibility = onbI===ONB.length-1 ? "hidden" : "visible";
+  }
+  function finishOnb(){ store.set("melune-onboarded", true); setMode("register"); show("auth"); }
+  $("onb-next").onclick = () => { if(onbI<ONB.length-1){ onbI++; renderOnb(); } else finishOnb(); };
+  $("onb-skip").onclick = finishOnb;
+
+  /* ================= Rendern ================= */
+  function renderAll(){ renderUser(); renderHome(); renderCal(); renderBody(); renderSettings(); }
+
+  function renderUser(){
+    const u = me(); if(!u) return; const a = analyse(u);
+    $("p-name").textContent = u.name;
+    $("p-initial").textContent = u.name[0].toUpperCase();
+    $("p-since").textContent = "Mitglied seit " + new Date(u.since).toLocaleDateString("de-DE",{month:"long",year:"numeric"});
+    $("p-len").textContent = a.avgLen; $("p-per").textContent = a.avgPer;
+    $("p-day").textContent = a.day ?? "–";
+  }
+
+  function renderHome(){
+    const u = me(); if(!u) return; const a = analyse(u);
+    const h = new Date().getHours();
+    document.querySelectorAll("[data-hph]").forEach(d=>d.classList.toggle("on", +d.dataset.hph===a.phaseIdx));
+    $("h-avg-len").textContent = a.avgLen+" Tage"; $("h-avg-per").textContent = a.avgPer+" Tage";
+    $("h-avg-len-src").textContent = a.cycles.length ? "Basierend auf deinen Einträgen" : "Basierend auf deinen Angaben";
+    renderMood();
+    $("h-prog").style.width = (a.day ? Math.min(100, a.day/a.avgLen*100) : 0)+"%";
+    $("h-phase-name").textContent = a.phase || "Noch keine Daten";
+    if(a.day){
+      const until = diff(a.nextPeriod, today());
+      $("h-phase").textContent = PHASE_TXT[a.phaseIdx]+" Periode "+(until<=0 ? "heute fällig." : "in ca. "+until+(until===1?" Tag.":" Tagen."));
+      $("h-next-period").textContent = fmt(a.nextPeriod);
+      $("h-next-ovu").textContent = fmt(a.ovu);
+    } else {
+      $("h-phase").textContent = "Trag deine Periode im Kalender ein.";
+      $("h-next-period").textContent = "–"; $("h-next-ovu").textContent = "–";
+    }
+    $("h-impuls").textContent = impulse(a);
+    if(a.late>0) $("h-phase").textContent = "Deine Periode ist "+a.late+(a.late===1?" Tag":" Tage")+" überfällig.";
+    renderContraCard(); renderToday();
+    // Erinnerungen
+    const box = $("h-reminders"); box.innerHTML = "";
+    const r = u.reminders, items = [];
+    if(a.day){
+      const until = diff(a.nextPeriod, today()), toOvu = diff(a.ovu, today());
+      if(r.period && !a.late && until>=0 && until<=2) items.push(["Deine Periode kommt bald", until===0?"Wahrscheinlich heute":"In ca. "+until+(until===1?" Tag":" Tagen")+". Denk an Binden oder Tampons."]);
+      if(r.ovu && toOvu>=-1 && toOvu<=5) items.push(["Fruchtbare Tage", toOvu<=0?"Heute ist ungefähr dein Eisprung.":"Eisprung in ca. "+toOvu+" Tagen."]);
+    }
+    const cs = contraStatus(u);
+    if(r.pill && !u.pillTaken[ds(today())] && !(cs && cs.pause)) items.push(["Pille nicht vergessen", "Heute um "+r.pillTime+" Uhr"]);
+    for(const [t,s] of items){
+      const d = document.createElement("div"); d.className="remind";
+      d.innerHTML = `<div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div><div><b>${t}</b><span>${s}</span></div>`;
+      box.appendChild(d);
+    }
+  }
+
+  let calMonth = new Date(today().getFullYear(), today().getMonth(), 1);
+  function renderCal(){
+    const u = me(); if(!u) return; const a = analyse(u);
+    $("cal-title").textContent = calMonth.toLocaleDateString("de-DE",{month:"long",year:"numeric"});
+    const cal = $("cal"); cal.innerHTML = "";
+    for(const w of ["Mo","Di","Mi","Do","Fr","Sa","So"]){ const e=document.createElement("div"); e.className="wd"; e.textContent=w; cal.appendChild(e); }
+    const first = calMonth, offset = (first.getDay()+6)%7, n = new Date(first.getFullYear(), first.getMonth()+1, 0).getDate();
+    // Vorhersagen für die nächsten 6 Zyklen
+    const pred = new Set(), fert = new Set(), ovu = new Set();
+    if(a.starts.length){
+      const last = pd(a.starts[a.starts.length-1]);
+      for(let c=0;c<=6;c++){
+        const s = add(last, a.avgLen*c);
+        if(c>0) for(let i=0;i<a.avgPer;i++){ const d=add(s,i); if(d>=today()) pred.add(ds(d)); }
+        const o = add(s, a.avgLen-14); ovu.add(ds(o));
+        for(let i=-5;i<=1;i++) fert.add(ds(add(o,i)));
+      }
+    }
+    const t = ds(today());
+    for(let i=0;i<offset;i++){ const e=document.createElement("button"); e.className="day out"; cal.appendChild(e); }
+    for(let d=1; d<=n; d++){
+      const date = new Date(first.getFullYear(), first.getMonth(), d), k = ds(date);
+      const e = document.createElement("button"); e.className="day"; e.textContent=d;
+      if(a.set.has(k)) e.classList.add("period");
+      else if(pred.has(k)) e.classList.add("pred");
+      else if(ovu.has(k)) e.classList.add("ovu");
+      else if(fert.has(k)) e.classList.add("fertile");
+      if(k===t) e.classList.add("today");
+      e.onclick = () => togglePeriod(k);
+      cal.appendChild(e);
+    }
+  }
+  function togglePeriod(k){
+    const u = me();
+    if(pd(k) > today()) return toast("Zukünftige Tage kannst du noch nicht eintragen");
+    const s = new Set(u.periods);
+    if(s.has(k)){ s.delete(k); toast("Periode ausgetragen"); } else { s.add(k); toast("Periode eingetragen ♡"); }
+    u.periods = [...s].sort(); saveUsers(); renderAll();
+  }
+  $("cal-prev").onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()-1, 1); renderCal(); };
+  $("cal-next").onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 1); renderCal(); };
+
+  function renderBody(){
+    const u = me(); if(!u) return; const a = analyse(u);
+    $("b-phase").textContent = a.phase || "Noch keine Daten";
+    document.querySelectorAll("[data-ph]").forEach(d=>d.classList.toggle("on", +d.dataset.ph===a.phaseIdx));
+    $("b-tip").textContent = a.phaseIdx!=null ? TIPS[a.phaseIdx] : "Trag deine Periode im Kalender ein, dann zeigt dir MÉLUNE, in welcher Phase du bist.";
+    $("b-len").textContent = a.avgLen; $("b-per").textContent = a.avgPer; $("b-count").textContent = a.cycles.length;
+    const has = a.cycles.length>0;
+    drawAlerts($("b-alerts"), insights(a));
+    $("b-water").textContent = weekAvg(u,"water"); $("b-sleep").textContent = weekAvg(u,"sleep");
+    $("b-chart-wrap").classList.toggle("hidden", !has); $("b-empty").classList.toggle("hidden", has);
+    if(has){
+      const last = a.cycles.slice(-6), max = Math.max(...last.map(c=>c.len), 35);
+      $("b-bars").innerHTML = last.map((c,i)=>`<div class="${i===last.length-1?"cur":""}" style="height:${c.len/max*100}%"><span>${c.len}</span></div>`).join("");
+      $("b-bar-labels").innerHTML = last.map(c=>`<span>${pd(c.start).toLocaleDateString("de-DE",{month:"short"})}</span>`).join("");
+    }
+  }
+
+  function renderSettings(){
+    const u = me(); if(!u) return;
+    document.querySelectorAll("[data-rem]").forEach(i=>i.checked = !!u.reminders[i.dataset.rem]);
+    $("pill-time").value = u.reminders.pillTime;
+    $("pill-time-row").classList.toggle("hidden", !u.reminders.pill);
+    $("lock-toggle").checked = !!u.pin;
+    $("lock-actions").classList.toggle("hidden", !u.pin);
+    $("lock-sub").textContent = u.pin ? "Aktiv · PIN" : "Mit PIN schützen";
+    $("contra-sub").textContent = u.contra && u.contra.method!=="none" ? METHODS[u.contra.method].name : "Methode wählen";
+  }
+
+  /* ================= Erinnerungen ================= */
+  document.querySelectorAll("[data-rem]").forEach(i=>i.onchange=()=>{ me().reminders[i.dataset.rem]=i.checked; saveUsers(); renderAll(); });
+  $("pill-time").onchange = () => { me().reminders.pillTime = $("pill-time").value; saveUsers(); renderHome(); };
+  $("notif-btn").onclick = async () => {
+    if(!("Notification" in window)) return toast("Dein Browser unterstützt das hier nicht. In der echten App geht es.");
+    const p = await Notification.requestPermission();
+    if(p==="granted"){ try{ new Notification("MÉLUNE ♡",{body:"So sehen deine Erinnerungen aus."}); }catch(e){} toast("Benachrichtigungen sind an"); }
+    else toast("Benachrichtigungen wurden nicht erlaubt");
+  };
+
+  /* ================= App-Sperre ================= */
+  let unlocked = false, pinBuf = "", pinFlow = null; // pinFlow: {type:'unlock'|'set'|'confirm', first}
+  function openPin(flow){
+    pinFlow = flow; pinBuf = ""; drawDots();
+    $("lock-title").textContent = flow.type==="unlock" ? "PIN eingeben" : flow.type==="set" ? "Neue PIN festlegen" : "PIN wiederholen";
+    $("lock-sub2").innerHTML = flow.type==="unlock" ? "Willkommen zurück, "+me().name : "4 Ziffern";
+    $("lock").classList.remove("hidden");
+    $("k-x").textContent = flow.type==="unlock" ? "Vergessen?" : "Abbrechen";
+  }
+  function drawDots(){ [...$("pin-dots").children].forEach((d,i)=>d.classList.toggle("f", i<pinBuf.length)); }
+  function shake(msg){ const d=$("pin-dots"); d.classList.remove("shake"); void d.offsetWidth; d.classList.add("shake"); $("lock-sub2").textContent=msg; pinBuf=""; setTimeout(drawDots,150); }
+  async function pinDone(){
+    const u = me(), f = pinFlow;
+    if(f.type==="unlock"){
+      if(await hash(pinBuf)===u.pin){ unlocked=true; $("lock").classList.add("hidden"); }
+      else shake("Falsche PIN");
+    } else if(f.type==="set"){ openPin({type:"confirm", first:pinBuf}); }
+    else {
+      if(pinBuf===f.first){ u.pin = await hash(pinBuf); saveUsers(); unlocked=true; $("lock").classList.add("hidden"); renderSettings(); toast("App-Sperre ist aktiv 🔒"); }
+      else { openPin({type:"set"}); shake("Die PINs waren nicht gleich"); }
+    }
+  }
+  (function buildPad(){
+    const pad = $("keypad");
+    [1,2,3,4,5,6,7,8,9,"x",0,"<"].forEach(k=>{
+      const b = document.createElement("button");
+      if(k==="x"){ b.className="ghost"; b.id="k-x"; b.onclick=()=>{
+        if(pinFlow.type==="unlock"){ if(confirm("PIN vergessen? Du wirst abgemeldet und meldest dich mit deinem Passwort neu an. Die PIN wird dabei entfernt.")){ me().pin=null; saveUsers(); logout(); } }
+        else { $("lock").classList.add("hidden"); renderSettings(); }
+      }; }
+      else if(k==="<"){ b.className="ghost"; b.textContent="⌫"; b.style.fontSize="22px"; b.onclick=()=>{ pinBuf=pinBuf.slice(0,-1); drawDots(); }; }
+      else { b.textContent=k; b.onclick=()=>{ if(pinBuf.length<4){ pinBuf+=k; drawDots(); if(pinBuf.length===4) setTimeout(pinDone,120); } }; }
+      pad.appendChild(b);
+    });
+  })();
+  $("lock-toggle").onchange = () => {
+    if($("lock-toggle").checked) openPin({type:"set"});
+    else { me().pin=null; saveUsers(); renderSettings(); toast("App-Sperre ist aus"); }
+  };
+  $("lock-change").onclick = () => openPin({type:"set"});
+  $("lock-now").onclick = () => { unlocked=false; openPin({type:"unlock"}); };
+  document.addEventListener("visibilitychange", ()=>{ if(document.hidden && me() && me().pin){ unlocked=false; openPin({type:"unlock"}); } });
+
+  /* ================= Konto ================= */
+  function fillKonto(){
+    const u = me(); if(!u) return; const a = analyse(u);
+    $("k-name").textContent = u.name; $("k-mail").textContent = u.email;
+    $("k-since").textContent = new Date(u.since).toLocaleDateString("de-DE");
+    $("k-last").value = a.starts.length ? a.starts[a.starts.length-1] : "";
+    $("k-len").value = u.cycle ? u.cycle.len : 28;
+    $("k-per").value = u.cycle ? u.cycle.per : 5;
+  }
+  $("k-save").onclick = () => { saveCycle(me(), $("k-last").value, $("k-len").value, $("k-per").value); renderAll(); toast("Gespeichert ♡"); };
+  $("k-logout").onclick = logout;
+  $("k-delete").onclick = () => {
+    if(!confirm("Konto und alle Daten wirklich löschen? Das kann nicht rückgängig gemacht werden.")) return;
+    delete users[session]; saveUsers(); logout(); setMode("register"); toast("Dein Konto wurde gelöscht");
+  };
+
+  /* ================= Navigation ================= */
+  const SUB = ["darstellung","konto","erinnerungen","sperre","verhuetung"];
+  function show(id){
+    document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+    $("page-"+id).classList.remove("hidden");
+    const tab = SUB.includes(id) ? "profil" : id;
+    document.querySelectorAll("nav [data-tab]").forEach(b=>b.classList.toggle("on", b.dataset.tab===tab));
+    document.body.classList.toggle("no-nav", id==="auth" || id==="onboard");
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("nav [data-tab]").forEach(b=>b.onclick=()=>{ renderAll(); show(b.dataset.tab); });
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ if(b.dataset.open==="konto") fillKonto(); if(b.dataset.open==="verhuetung"){ ctDraft=null; renderVerhuetung(); } renderSettings(); show(b.dataset.open); });
+  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>show("profil"));
+  document.querySelectorAll("[data-soon]").forEach(b=>b.onclick=()=>toast("Kommt bald ♡"));
+
+  /* ================= Start ================= */
+  paint();
+  if(me()){ enterApp(); if(me().pin) openPin({type:"unlock"}); }
+  else if(!store.get("melune-onboarded", false)){ renderOnb(); show("onboard"); }
+  else { setMode("register"); show("auth"); }
+</script>
+</body>
+</html>
