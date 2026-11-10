@@ -201,6 +201,14 @@
   .vary-opts button{border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:10px 12px;text-align:left;font:inherit;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer}
   .vary-opts button span{display:block;font-weight:400;font-size:11px;color:var(--ink-soft)}
   .vary-opts button.on{border:2px solid var(--accent);background:var(--accent-pale)}
+  .card.hero{background:linear-gradient(160deg,var(--card) 0%,var(--accent-pale) 100%);padding:24px 22px 18px}
+  .card.hero h1.serif{font-size:clamp(24px,7.4vw,32px);white-space:nowrap}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:18px}
+  .wday{border:0;background:none;font:inherit;color:var(--ink);border-radius:16px;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+  .wday span{font-size:13px;color:var(--ink-soft)}
+  .wday b{font-size:18px;font-weight:600}
+  .wday.today{background:var(--accent);color:#fff}
+  .wday.today span{color:rgba(255,255,255,.85)}
   /* Hilfe, Über, Wissen */
   details.faq{border-bottom:1px solid var(--line);padding:14px 0}
   details.faq:last-child{border-bottom:0}
@@ -344,9 +352,12 @@
       </div>
     </header>
 
-    <div class="eyebrow" style="margin:6px 4px 6px">Dein Körper · Dein Rhythmus</div>
-    <h1 class="serif" style="padding:0 4px 4px">Schön, dass du da bist ♡</h1>
-    <p class="muted" style="padding:0 4px 18px">Ein kleiner Moment nur für dich.</p>
+    <div class="card hero">
+      <div class="eyebrow">Dein Körper · Dein Rhythmus</div>
+      <h1 class="serif" style="padding:0 0 4px">Schön, dass du da bist ♡</h1>
+      <p class="muted">Ein kleiner Moment nur für dich.</p>
+      <div class="week" id="h-week"></div>
+    </div>
 
     <div class="duo">
       <div class="card mini">
@@ -1125,6 +1136,14 @@
   }
   $("ct-save").onclick = () => { ctDraft.start = $("ct-start").value || ds(today()); saveContra(); show("profil"); };
 
+  /* ================= Wochenleiste ================= */
+  function renderWeek(){
+    const t = today(), WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+    $("h-week").innerHTML = Array.from({length:7},(_,i)=>{ const d = add(t,i-3);
+      return `<button class="wday${i===3?" today":""}" data-d="${ds(d)}"><span>${WD[d.getDay()]}</span><b>${d.getDate()}</b></button>`; }).join("");
+    document.querySelectorAll("#h-week .wday").forEach(b=>b.onclick=()=>{ const d = pd(b.dataset.d); calMonth = new Date(d.getFullYear(), d.getMonth(), 1); renderCal(); show("kalender"); });
+  }
+
   /* ================= Schwankung & letzter Zyklus ================= */
   const VARY_TXT = {1:["± 1–2 Tage","Regelmäßig"],4:["± 3–5 Tage","Leicht schwankend"],7:["± 6+ Tage","Unregelmäßig"]};
   function cycleExtras(u, a){
@@ -1237,6 +1256,7 @@
     $("h-avg-len").textContent = a.avgLen+" Tage"; $("h-avg-per").textContent = a.avgPer+" Tage";
     $("h-avg-len-src").textContent = a.cycles.length ? "Basierend auf deinen Einträgen" : "Basierend auf deinen Angaben";
     renderCycleExtras(u, a);
+    renderWeek();
     renderMood();
     $("h-prog").style.width = (a.day ? Math.min(100, a.day/a.avgLen*100) : 0)+"%";
     $("h-phase-name").textContent = a.phase || "Noch keine Daten";
