@@ -187,6 +187,35 @@
   .mood{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);font-size:26px;cursor:pointer;transition:transform .15s}
   .mood.on{border:2px solid var(--accent);background:var(--accent-pale);transform:scale(1.1)}
 
+  .pickers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .picker{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:18px;padding:10px;cursor:pointer;background:var(--card)}
+  .picker input{width:42px;height:42px;border:0;padding:0;border-radius:50%;background:none;cursor:pointer;flex:none}
+  .picker input::-webkit-color-swatch-wrapper{padding:0}
+  .picker input::-webkit-color-swatch{border:2px solid var(--line);border-radius:50%}
+  .picker input::-moz-color-swatch{border:2px solid var(--line);border-radius:50%}
+  .picker b{display:block;font-size:14px}
+  .picker .small{display:block;font-size:11px}
+  /* Hilfe, Über, Wissen */
+  details.faq{border-bottom:1px solid var(--line);padding:14px 0}
+  details.faq:last-child{border-bottom:0}
+  details.faq summary{font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  details.faq summary::-webkit-details-marker{display:none}
+  details.faq summary:after{content:"+";color:var(--accent);font-size:20px;line-height:1}
+  details.faq[open] summary:after{content:"−"}
+  details.faq p{color:var(--ink-soft);font-size:14px;margin-top:8px}
+  .prose p{color:var(--ink-soft);font-size:15px;margin-top:10px}
+  .prose h3{font-size:16px;margin-top:18px}
+  .prose ul{color:var(--ink-soft);font-size:15px;margin:8px 0 0 20px}
+  .art{display:flex;align-items:center;gap:14px;padding:14px 0;border:0;border-bottom:1px solid var(--line);background:none;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+  .art:last-child{border-bottom:0}
+  .art .dot{width:40px;height:40px;border-radius:14px;background:var(--accent-pale);display:grid;place-items:center;flex:none;color:var(--accent);font-size:18px}
+  .art b{display:block;font-size:15px}
+  .art span.s{font-size:12px;color:var(--ink-soft)}
+  .art .chev{margin-left:auto;color:var(--ink-soft)}
+  .tag{display:inline-block;font-size:11px;font-weight:600;background:var(--accent-pale);color:var(--accent);padding:2px 8px;border-radius:999px;margin-left:6px}
+  .file-btn{position:relative;overflow:hidden}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
   /* Onboarding */
   .onb{min-height:100vh;display:flex;flex-direction:column;padding:24px 0 32px}
   .onb-skip{align-self:flex-end;margin:8px 4px 0}
@@ -281,6 +310,7 @@
           <button class="btn primary" type="submit" id="a-submit">Konto erstellen</button>
           <p class="small" style="text-align:center;margin-top:14px" id="a-forgot-wrap"><button type="button" class="link" id="a-forgot">Passwort vergessen?</button></p>
         </form>
+        <p class="small" style="text-align:center;margin-top:14px">Neues Handy? <label class="link file-btn" style="display:inline-block">Backup laden<input type="file" accept=".json,application/json" id="a-restore"></label></p>
       </div>
       <div class="card hidden" id="auth-step2">
         <div class="steps"><i></i><i></i></div>
@@ -302,6 +332,7 @@
     <header class="htop">
       <div><div class="serif hbrand">MÉLUNE</div><div class="htag">Dein Zyklus · Dein Gefühl</div></div>
       <div class="hbtns">
+        <button class="icon-btn" id="h-reload" aria-label="Seite neu laden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
         <button class="icon-btn" id="h-to-cal" aria-label="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></button>
         <button class="icon-btn" id="h-to-settings" aria-label="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
       </div>
@@ -428,6 +459,11 @@
         <div class="stat"><b id="b-sleep">–</b><span class="small">Ø Stunden Schlaf</span></div>
       </div>
     </div>
+    <div class="card">
+      <div class="eyebrow">Wissen</div>
+      <div id="b-wissen"></div>
+      <button class="btn" id="b-wissen-all">Alle Artikel ansehen</button>
+    </div>
     <p class="small center" style="padding:4px 16px 0">MÉLUNE ersetzt keine ärztliche Beratung.</p>
   </section>
 
@@ -451,7 +487,7 @@
         Partner-Modus <span class="pill">Optional</span>
       </div>
       <p class="muted" style="margin-top:8px">Lade deinen Partner ein und teile ausgewählte Zyklusinformationen. Du entscheidest jederzeit, was sichtbar ist.</p>
-      <button class="btn" data-soon>+ Partner einladen</button>
+      <button class="btn" data-open="partner">+ Partner einladen</button>
     </div>
 
     <h2 class="serif">Weitere Einstellungen</h2>
@@ -480,16 +516,16 @@
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="5.5" fill="currentColor"/></svg></span>
         <span><div class="t">Darstellung</div><div class="s">Design und Erscheinungsbild</div></span><span class="chev">›</span>
       </button>
-      <button class="item" data-soon>
+      <button class="item" data-open="hilfe">
         <span class="ic" style="font-size:18px">?</span>
         <span><div class="t">Hilfe &amp; Support</div><div class="s">Fragen und Kontakt</div></span><span class="chev">›</span>
       </button>
-      <button class="item" data-soon>
+      <button class="item" data-open="ueber">
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>
         <span><div class="t">Über MÉLUNE</div><div class="s">Version und Informationen</div></span><span class="chev">›</span>
       </button>
     </div>
-    <div class="brand"><div class="serif">MÉLUNE</div><div class="small">Version 0.5 · Prototyp</div></div>
+    <div class="brand"><div class="serif">MÉLUNE</div><div class="small">Version 0.6 · Prototyp</div></div>
   </section>
 
   <!-- DARSTELLUNG -->
@@ -508,6 +544,12 @@
       <h2 class="serif" style="margin:0;font-size:25px;line-height:1.2">Wähle deine MÉLUNE-Farben ♡</h2>
       <p class="muted" style="margin-top:6px">Die Farbwelt verändert den gesamten Look der App.</p>
       <div class="themes" id="themes"></div>
+      <div class="eyebrow" style="margin-top:22px">Eigene Farben mischen</div>
+      <div class="pickers">
+        <label class="picker"><input type="color" id="pick-accent" value="#b77e8b"><span><b>Akzentfarbe</b><span class="small">Buttons, Ring, Periode</span></span></label>
+        <label class="picker"><input type="color" id="pick-bg" value="#f6efed"><span><b>Hintergrund</b><span class="small">Fläche der App</span></span></label>
+      </div>
+      <button class="link" id="pick-reset" style="margin-top:10px;font-size:13px">Hintergrund zurücksetzen</button>
       <label class="small" for="hex">Eigene Akzentfarbe (Hex-Code)</label>
       <input class="input" id="hex" value="#B77E8B" autocomplete="off" spellcheck="false">
       <button class="btn mt10" id="apply-hex">Eigene Farbe übernehmen</button>
@@ -541,6 +583,104 @@
       <button class="btn" id="lock-change">PIN ändern</button>
       <button class="btn mt10" id="lock-now">Jetzt sperren</button>
     </div>
+  </section>
+
+  <!-- IMPORT -->
+  <section id="page-import" class="page hidden">
+    <div class="sub-head"><button class="back" data-back data-back-to="konto" aria-label="Zurück">‹</button><h1 class="serif" style="font-size:28px">Daten übernehmen</h1></div>
+    <div class="card" style="padding-top:6px;padding-bottom:6px">
+      <details class="faq"><summary>Aus Flo, Clue oder einer anderen App</summary><p>Exportiere in deiner alten App deine Daten (meist unter <b>Einstellungen › Daten exportieren</b>) als CSV- oder Textdatei und lade die Datei hier hoch. Du kannst die Daten auch einfach kopieren und unten einfügen.</p></details>
+      <details class="faq"><summary>Aus Apple Health</summary><p>Öffne die Health-App › Profilbild › <b>Alle Gesundheitsdaten exportieren</b>. Entpacke die ZIP-Datei und lade die Datei <b>Export.xml</b> hier hoch. MÉLUNE liest daraus nur deine Periodendaten.</p></details>
+      <details class="faq"><summary>Ohne Export</summary><p>Schreib einfach die Daten deiner letzten Perioden untereinander, zum Beispiel:<br>03.08.2026<br>31.08.2026<br>29.09.2026</p></details>
+    </div>
+    <div class="card">
+      <label class="btn primary file-btn" style="text-align:center;margin-top:0">Datei auswählen<input type="file" accept=".csv,.txt,.json,.xml,text/*,application/json" id="imp-file"></label>
+      <div class="field" style="margin-top:14px"><label for="imp-text">… oder hier einfügen</label><textarea class="input" id="imp-text" rows="5" placeholder="03.08.2026&#10;31.08.2026&#10;29.09.2026"></textarea></div>
+      <div class="field"><label>Was bedeuten die Daten?</label>
+        <div class="seg" id="imp-mode"><button data-im="auto" class="on">Auto</button><button data-im="days">Alle Tage</button><button data-im="starts">Nur Beginn</button></div>
+      </div>
+      <p class="muted" id="imp-preview">Noch keine Daten gefunden.</p>
+      <button class="btn primary" id="imp-go" disabled style="opacity:.5">Übernehmen</button>
+    </div>
+  </section>
+
+  <!-- PARTNER -->
+  <section id="page-partner" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Partner-Modus</h1></div>
+    <div class="card">
+      <p class="muted">Teile einen Link mit deinem Partner. Er sieht nur das, was du hier auswählst, und braucht dafür kein Konto.</p>
+    </div>
+    <div class="card" style="padding-top:8px;padding-bottom:8px">
+      <div class="trow"><div><div class="t">Aktuelle Phase</div><div class="s">Zyklustag und Phase</div></div><label class="switch"><input type="checkbox" data-share="phase" checked><span></span></label></div>
+      <div class="trow"><div><div class="t">Nächste Periode</div><div class="s">Voraussichtliches Datum</div></div><label class="switch"><input type="checkbox" data-share="period" checked><span></span></label></div>
+      <div class="trow"><div><div class="t">Fruchtbare Tage</div><div class="s">Fruchtbares Fenster und Eisprung</div></div><label class="switch"><input type="checkbox" data-share="fertile"><span></span></label></div>
+      <div class="trow"><div><div class="t">Stimmung heute</div><div class="s">Dein Smiley von heute</div></div><label class="switch"><input type="checkbox" data-share="mood"><span></span></label></div>
+    </div>
+    <div class="card">
+      <button class="btn primary" id="pt-share" style="margin-top:0">Link teilen</button>
+      <input class="input hidden" id="pt-link" readonly style="margin-top:12px;font-size:13px">
+      <p class="small" style="margin-top:10px">Der Link zeigt den Stand von heute und rechnet die Phase automatisch weiter. Wenn du neue Perioden einträgst, schick einfach einen neuen Link.</p>
+    </div>
+  </section>
+
+  <!-- PARTNER-ANSICHT (ohne Login) -->
+  <section id="page-partnerview" class="page hidden">
+    <header class="htop"><div><div class="serif hbrand">MÉLUNE</div><div class="htag">Partner-Ansicht</div></div></header>
+    <h1 class="serif" style="padding:0 4px 4px" id="pv-title"></h1>
+    <p class="muted" style="padding:0 4px 18px" id="pv-sub"></p>
+    <div id="pv-cards"></div>
+    <div class="card impuls"><div class="eyebrow">So kannst du sie unterstützen</div><div class="serif" id="pv-tip"></div></div>
+    <p class="small center" style="padding:0 16px">Schätzung · keine sichere Verhütungsmethode.</p>
+  </section>
+
+  <!-- HILFE -->
+  <section id="page-hilfe" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Hilfe &amp; Support</h1></div>
+    <div class="card" style="padding-top:6px;padding-bottom:6px">
+      <details class="faq"><summary>Wie trage ich meine Periode ein?</summary><p>Geh auf <b>Kalender</b> und tippe auf jeden Tag, an dem du deine Periode hattest. Tippst du nochmal, ist der Eintrag wieder weg. MÉLUNE berechnet daraus automatisch deine nächste Periode und deinen Eisprung.</p></details>
+      <details class="faq"><summary>Wie genau sind die Vorhersagen?</summary><p>Die Vorhersagen sind Schätzungen auf Basis deiner Einträge. Je mehr Zyklen du einträgst, desto genauer werden sie. MÉLUNE ist <b>keine sichere Verhütungsmethode</b>.</p></details>
+      <details class="faq"><summary>Wo sind meine Daten gespeichert?</summary><p>Nur auf deinem Gerät, im Speicher deines Browsers. Niemand außer dir kann sie sehen. Wenn du die Browserdaten löschst, sind sie weg. Mach deshalb ab und zu ein Backup unter <b>Profil › Mein Konto › Daten sichern</b>.</p></details>
+      <details class="faq"><summary>Wie nehme ich meine Daten auf ein neues Handy mit?</summary><p>Lade auf dem alten Handy unter <b>Mein Konto</b> ein Backup herunter und schick dir die Datei (z. B. per AirDrop oder Mail). Öffne MÉLUNE auf dem neuen Handy und tippe bei der Anmeldung auf <b>Backup laden</b>.</p></details>
+      <details class="faq"><summary>Kann ich Daten aus einer anderen App übernehmen?</summary><p>Ja. Unter <b>Profil › Mein Konto › Daten übernehmen</b> kannst du einen Export aus Flo, Clue, Apple Health oder einfach eine Liste mit Datumsangaben laden.</p></details>
+      <details class="faq"><summary>Wie teile ich meinen Zyklus mit meinem Partner?</summary><p>Tippe auf Profil bei <b>Partner-Modus</b> auf <b>Partner einladen</b>, wähle aus, was er sehen darf, und teile den Link. Er braucht dafür kein Konto.</p></details>
+      <details class="faq"><summary>Ich habe meine PIN vergessen.</summary><p>Tippe auf dem PIN-Bildschirm auf <b>Vergessen?</b>. Du wirst abgemeldet und meldest dich mit deinem Passwort neu an. Die PIN wird dabei entfernt.</p></details>
+      <details class="faq"><summary>Ich habe mein Passwort vergessen.</summary><p>Im Prototyp kann das Passwort noch nicht zurückgesetzt werden, weil es keinen Server gibt. Das kommt mit der fertigen App.</p></details>
+      <details class="faq"><summary>Wie bekomme ich MÉLUNE auf den Home-Bildschirm?</summary><p>iPhone: In Safari auf <b>Teilen › Zum Home-Bildschirm</b> tippen. Android: In Chrome auf das Menü <b>⋮ › Zum Startbildschirm hinzufügen</b> tippen.</p></details>
+      <details class="faq"><summary>Die App zeigt etwas Altes an.</summary><p>Tippe oben auf Home auf den Pfeil <b>↻</b>, um die Seite neu zu laden. Dann bekommst du die neueste Version.</p></details>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Kontakt</div>
+      <p class="muted" id="contact-txt"></p>
+      <a class="btn primary" id="contact-btn" style="text-align:center;text-decoration:none">E-Mail schreiben</a>
+    </div>
+  </section>
+
+  <!-- ÜBER -->
+  <section id="page-ueber" class="page hidden">
+    <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Über MÉLUNE</h1></div>
+    <div class="card center">
+      <div class="moon"></div>
+      <div class="serif" style="font-size:30px;letter-spacing:6px">MÉLUNE</div>
+      <p class="small">Dein Zyklus · Dein Gefühl</p>
+      <p class="small" style="margin-top:6px">Version 0.6 · Prototyp</p>
+    </div>
+    <div class="card" style="padding-top:6px;padding-bottom:6px">
+      <details class="faq"><summary>Was ist MÉLUNE?</summary><p>MÉLUNE ist eine Zyklus-App, die dich durch deinen Monat begleitet: Periode, fruchtbare Tage, Stimmung und kleine Impulse für jeden Tag, in deinen Lieblingsfarben.</p></details>
+      <details class="faq"><summary>Datenschutz</summary><p>MÉLUNE speichert alle Daten (Konto, Perioden, Stimmung, Verhütung, Wasser und Schlaf) ausschließlich lokal in deinem Browser auf diesem Gerät. Es werden keine Daten an einen Server übertragen, kein Tracking und keine Werbung. Die Schriften werden von Google Fonts geladen. Du kannst dein Konto und alle Daten jederzeit unter <b>Mein Konto › Konto löschen</b> entfernen.</p></details>
+      <details class="faq"><summary>Impressum</summary><p id="impressum-txt"></p></details>
+      <details class="faq"><summary>Medizinischer Hinweis</summary><p>MÉLUNE ersetzt keine ärztliche Beratung und ist keine sichere Verhütungsmethode. Bei Beschwerden oder Unsicherheiten wende dich bitte an deine Frauenärztin oder deinen Frauenarzt.</p></details>
+    </div>
+  </section>
+
+  <!-- WISSEN -->
+  <section id="page-wissen" class="page hidden">
+    <div class="sub-head"><button class="back" data-back data-back-to="body" aria-label="Zurück">‹</button><h1 class="serif">Wissen</h1></div>
+    <div class="card" style="padding-top:6px;padding-bottom:6px" id="w-list"></div>
+  </section>
+  <section id="page-artikel" class="page hidden">
+    <div class="sub-head"><button class="back" data-back data-back-to="wissen" aria-label="Zurück">‹</button><h1 class="serif" id="art-title" style="font-size:26px"></h1></div>
+    <div class="card prose" id="art-body"></div>
+    <p class="small center" style="padding:0 16px">MÉLUNE ersetzt keine ärztliche Beratung.</p>
   </section>
 
   <!-- VERHÜTUNG -->
@@ -579,6 +719,18 @@
         <div class="field"><label for="k-per">Periodendauer</label><input class="input" id="k-per" type="number" min="1" max="10"></div>
       </div>
       <button class="btn" id="k-save">Speichern</button>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Daten sichern</div>
+      <p class="muted">Deine Daten sind nur auf diesem Gerät gespeichert. Lade ein Backup herunter, um sie auf ein neues Handy mitzunehmen oder sicher aufzubewahren.</p>
+      <button class="btn primary" id="k-backup">Backup herunterladen</button>
+      <label class="btn mt10 file-btn" style="text-align:center">Backup laden<input type="file" accept=".json,application/json" id="k-restore"></label>
+      <p class="small" id="k-backup-info" style="margin-top:10px"></p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Aus anderer App übernehmen</div>
+      <p class="muted">Du hast vorher eine andere Zyklus-App benutzt? Übernimm deine bisherigen Perioden, damit MÉLUNE sofort genau rechnet.</p>
+      <button class="btn" data-open="import">Daten übernehmen</button>
     </div>
     <button class="btn" id="k-logout">Abmelden</button>
     <button class="btn danger mt10" id="k-delete">Konto löschen</button>
@@ -652,6 +804,13 @@
            fertile:"#8fae9a", fertileSoft:"#dde9e0"};
       t.nav = t.card;
     }
+    if(!dark && look.bg){
+      t.bg = look.bg; t.card = blend(look.bg,"#ffffff",.75); t.nav = t.card;
+      t.line = blend(blend(look.bg,"#000000",.06), accent, .15);
+      t.pale = blend(t.card, accent, .14); t.soft = blend(t.card, accent, .3);
+      const n = parseInt(look.bg.slice(1),16), lum = (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255;
+      if(lum < .45){ t.ink = "#f6eef0"; t.inkSoft = "#d2c3c7"; t.card = blend(look.bg,"#ffffff",.1); t.nav=t.card; t.line=blend(t.card,"#ffffff",.12); t.pale=blend(t.card,accent,.2); t.soft=blend(t.card,accent,.4); }
+    }
     return {t, dark};
   }
   function paint(){
@@ -661,6 +820,8 @@
     document.body.classList.toggle("dark", dark);
     document.querySelectorAll("#mode-seg button").forEach(b=>b.classList.toggle("on", b.dataset.mode===look.mode));
     renderThemes();
+    const pa = $("pick-accent"), pb = $("pick-bg");
+    if(pa){ pa.value = look.name ? THEMES[look.name].accent : look.hex; pb.value = look.bg || t.bg; }
   }
   function saveLook(){ store.set("melune-theme", look); paint(); }
   mq.addEventListener && mq.addEventListener("change", ()=>{ if(look.mode==="system") paint(); });
@@ -686,6 +847,9 @@
     look.hex = v.toLowerCase(); delete look.name; saveLook(); toast("Eigene Farbe übernommen ♡");
   };
   $("hex").value = (look.name ? THEMES[look.name].accent : look.hex).toUpperCase();
+  $("pick-accent").oninput = e => { look.hex = e.target.value.toLowerCase(); delete look.name; $("hex").value = look.hex.toUpperCase(); saveLook(); };
+  $("pick-bg").oninput = e => { look.bg = e.target.value.toLowerCase(); saveLook(); };
+  $("pick-reset").onclick = () => { delete look.bg; saveLook(); toast("Hintergrund zurückgesetzt"); };
 
   /* ================= Datum-Helfer ================= */
   const DAY = 864e5;
@@ -981,7 +1145,7 @@
   $("onb-skip").onclick = finishOnb;
 
   /* ================= Rendern ================= */
-  function renderAll(){ renderUser(); renderHome(); renderCal(); renderBody(); renderSettings(); }
+  function renderAll(){ renderUser(); renderHome(); renderCal(); renderBody(); renderSettings(); renderWissen(); }
 
   function renderUser(){
     const u = me(); if(!u) return; const a = analyse(u);
@@ -1169,24 +1333,204 @@
     delete users[session]; saveUsers(); logout(); setMode("register"); toast("Dein Konto wurde gelöscht");
   };
 
+  /* ================= Hilfe & Über ================= */
+  // Hier eure echten Angaben eintragen:
+  const CONTACT_EMAIL = "";   // z. B. "hallo@melune.de"
+  const IMPRESSUM = "";       // z. B. "Max Muster, Musterstraße 1, 12345 Musterstadt, E-Mail: ..."
+  $("contact-txt").textContent = CONTACT_EMAIL ? "Du hast eine Frage oder eine Idee? Schreib uns, wir freuen uns über deine Nachricht." : "Die Kontakt-E-Mail folgt bald.";
+  if(CONTACT_EMAIL) $("contact-btn").href = "mailto:"+CONTACT_EMAIL+"?subject="+encodeURIComponent("MÉLUNE Feedback");
+  else { $("contact-btn").classList.add("hidden"); }
+  $("impressum-txt").textContent = IMPRESSUM || "Die Angaben zum Impressum folgen, sobald MÉLUNE offiziell veröffentlicht wird.";
+  $("h-reload").onclick = () => { toast("Wird neu geladen …"); setTimeout(()=>location.reload(), 250); };
+
+  /* ================= Wissen ================= */
+  const ARTICLES = [
+    {id:"zyklus", icon:"◐", title:"Was ist ein normaler Zyklus?", sub:"Grundlagen", html:`
+      <p>Ein Zyklus beginnt am ersten Tag deiner Periode und endet am Tag vor der nächsten. Bei Erwachsenen ist ein Zyklus meistens <b>21 bis 35 Tage</b> lang. Die berühmten 28 Tage sind nur ein Durchschnitt.</p>
+      <p>Die Periode selbst dauert meist <b>2 bis 7 Tage</b>. Schwankungen von ein paar Tagen von Monat zu Monat sind völlig normal, zum Beispiel durch Stress, Reisen, Sport oder Krankheit.</p>
+      <h3>Die vier Phasen</h3>
+      <ul><li>Menstruation</li><li>Follikelphase</li><li>Eisprung</li><li>Lutealphase</li></ul>
+      <p>In jeder Phase verändern sich deine Hormone, und damit oft auch Energie, Haut, Schlaf und Stimmung.</p>`},
+    {id:"p0", phase:0, icon:"●", title:"Menstruation", sub:"Phase 1 · ca. Tag 1–5", html:`
+      <p>Die Gebärmutterschleimhaut wird abgestoßen, und Östrogen und Progesteron sind auf dem Tiefpunkt. Viele fühlen sich jetzt müder und brauchen mehr Ruhe.</p>
+      <h3>Was dir guttun kann</h3>
+      <ul><li>Wärme auf dem Bauch gegen Krämpfe</li><li>Eisenreiches Essen wie Linsen, Spinat oder Haferflocken</li><li>Sanfte Bewegung wie Spazierengehen oder Yoga</li><li>Genug trinken und schlafen</li></ul>
+      <p>Sehr starke Schmerzen, die dich im Alltag einschränken, sind <b>nicht normal</b>. Sprich sie bei deiner Frauenärztin an.</p>`},
+    {id:"p1", phase:1, icon:"◔", title:"Follikelphase", sub:"Phase 2 · nach der Periode", html:`
+      <p>Östrogen steigt langsam an, und in den Eierstöcken reift ein Eibläschen heran. Viele merken jetzt, wie Energie, Laune und Motivation zurückkommen.</p>
+      <h3>Was dir guttun kann</h3>
+      <ul><li>Neue Projekte anfangen und Dinge lernen</li><li>Intensivere Workouts, weil der Körper jetzt belastbarer ist</li><li>Treffen mit Freundinnen planen</li></ul>`},
+    {id:"p2", phase:2, icon:"✦", title:"Eisprung", sub:"Phase 3 · ca. 14 Tage vor der Periode", html:`
+      <p>Das reife Ei wird freigesetzt und kann etwa 12 bis 24 Stunden befruchtet werden. Weil Spermien bis zu 5 Tage überleben, gelten die <b>5 Tage davor und der Tag danach</b> als fruchtbar.</p>
+      <p>Manche spüren den Eisprung als leichtes Ziehen auf einer Seite (Mittelschmerz). Der Ausfluss wird oft klarer und dehnbarer.</p>
+      <p><b>Wichtig:</b> Die Vorhersage in MÉLUNE ist eine Schätzung und keine sichere Verhütung.</p>`},
+    {id:"p3", phase:3, icon:"◕", title:"Lutealphase", sub:"Phase 4 · vor der Periode", html:`
+      <p>Progesteron steigt und bereitet den Körper auf eine mögliche Schwangerschaft vor. Wenn keine eintritt, fallen die Hormone zum Ende hin ab, und die Periode beginnt.</p>
+      <h3>Typisch in dieser Phase</h3>
+      <ul><li>Heißhunger, vor allem auf Süßes</li><li>Spannen in der Brust</li><li>Stimmungsschwankungen oder Gereiztheit (PMS)</li><li>Pickel und Wassereinlagerungen</li></ul>
+      <p>Magnesium, regelmäßiges Essen, Bewegung und genug Schlaf können helfen.</p>`},
+    {id:"pms", icon:"☁", title:"PMS verstehen", sub:"Beschwerden vor der Periode", html:`
+      <p>PMS (prämenstruelles Syndrom) sind körperliche und seelische Beschwerden in den Tagen vor der Periode, zum Beispiel Kopfweh, Bauchkrämpfe, Müdigkeit, Reizbarkeit oder Traurigkeit. Viele haben PMS, und es ist kein Zeichen von Schwäche.</p>
+      <h3>Was helfen kann</h3>
+      <ul><li>Bewegung und frische Luft</li><li>Weniger Salz, Koffein und Alkohol</li><li>Regelmäßig schlafen</li><li>Aufschreiben, wann die Beschwerden kommen</li></ul>
+      <p>Wenn die Stimmung jeden Monat so stark kippt, dass dein Alltag leidet, kann das <b>PMDS</b> sein. Sprich dann mit deiner Ärztin.</p>`},
+    {id:"arzt", icon:"✚", title:"Wann zur Frauenärztin?", sub:"Warnzeichen", html:`
+      <p>Lass dich untersuchen, wenn:</p>
+      <ul><li>deine Periode länger als 3 Monate ausbleibt (und du nicht schwanger bist)</li><li>deine Zyklen regelmäßig kürzer als 21 oder länger als 35 Tage sind</li><li>die Periode länger als 7 Tage dauert oder sehr stark ist</li><li>du starke Schmerzen hast, die Schmerzmittel kaum lindern</li><li>du zwischen den Perioden Blutungen hast</li></ul>
+      <p>Auch ohne Beschwerden ist eine jährliche Vorsorge sinnvoll.</p>`}
+  ];
+  function artRow(a, cur){ return `<button class="art" data-art="${a.id}"><span class="dot">${a.icon}</span><span><b>${a.title}${cur?'<span class="tag">Jetzt</span>':""}</b><span class="s">${a.sub}</span></span><span class="chev">›</span></button>`; }
+  function bindArts(root){ root.querySelectorAll("[data-art]").forEach(b=>b.onclick=()=>openArticle(b.dataset.art)); }
+  function renderWissen(){
+    const a = me() ? analyse(me()) : {phaseIdx:null};
+    $("w-list").innerHTML = ARTICLES.map(x=>artRow(x, x.phase!=null && x.phase===a.phaseIdx)).join(""); bindArts($("w-list"));
+    const cur = ARTICLES.find(x=>x.phase===a.phaseIdx);
+    const pick = [cur || ARTICLES[0], ARTICLES.find(x=>x.id==="pms")].filter(Boolean);
+    $("b-wissen").innerHTML = pick.map(x=>artRow(x, x===cur)).join(""); bindArts($("b-wissen"));
+  }
+  function openArticle(id){ const x = ARTICLES.find(a=>a.id===id); $("art-title").textContent = x.title; $("art-body").innerHTML = `<div class="eyebrow">${x.sub}</div>`+x.html; show("artikel"); }
+  $("b-wissen-all").onclick = () => { renderWissen(); show("wissen"); };
+
+  /* ================= Backup ================= */
+  function downloadBackup(){
+    const u = me(); if(!u) return;
+    const data = {app:"melune", version:1, exported:new Date().toISOString(), user:u, look};
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "melune-backup-"+ds(today())+".json"; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+    store.set("melune-last-backup", new Date().toISOString()); renderBackupInfo();
+    toast("Backup gespeichert ♡");
+  }
+  function renderBackupInfo(){ const t = store.get("melune-last-backup", null); $("k-backup-info").textContent = t ? "Letztes Backup: "+new Date(t).toLocaleDateString("de-DE",{day:"numeric",month:"long",year:"numeric"}) : "Noch kein Backup erstellt."; }
+  async function restoreBackup(file){
+    try{
+      const data = JSON.parse(await file.text());
+      if(data.app!=="melune" || !data.user || !data.user.email) throw new Error("bad");
+      const u = data.user;
+      if(users[u.email] && session!==u.email && !confirm("Auf diesem Gerät gibt es schon ein Konto mit "+u.email+". Mit dem Backup überschreiben?")) return;
+      if(session===u.email && !confirm("Deine aktuellen Daten werden durch das Backup ersetzt. Fortfahren?")) return;
+      users[u.email] = ensure(u); saveUsers();
+      if(data.look){ look = data.look; saveLook(); $("hex").value = (look.name ? THEMES[look.name].accent : look.hex).toUpperCase(); }
+      session = u.email; store.set("melune-session", u.email); store.set("melune-onboarded", true);
+      unlocked = true; enterApp(); toast("Backup geladen. Willkommen zurück, "+u.name+" ♡");
+    }catch(e){ toast("Diese Datei ist kein gültiges MÉLUNE-Backup"); }
+  }
+  $("k-backup").onclick = downloadBackup;
+  $("k-restore").onchange = e => { if(e.target.files[0]) restoreBackup(e.target.files[0]); e.target.value=""; };
+  $("a-restore").onchange = e => { if(e.target.files[0]) restoreBackup(e.target.files[0]); e.target.value=""; };
+
+  /* ================= Import aus anderer App ================= */
+  let impMode = "auto", impDates = [];
+  function parseDates(text){
+    let lines = text.split(/\r?\n/);
+    if(/HKCategoryTypeIdentifierMenstrualFlow/.test(text)) lines = lines.filter(l=>/MenstrualFlow/.test(l) && !/HKCategoryValueMenstrualFlowNone/.test(l));
+    else if(lines.some(l=>/period|periode|menstru|blutung|bleeding|flow/i.test(l))) lines = lines.filter(l=>/period|periode|menstru|blutung|bleeding|flow|^\s*["']?\d/i.test(l) && !/(none|keine|spotting\s*:?\s*0)/i.test(l));
+    const out = new Set(), t = ds(today());
+    const push = (y,m,d)=>{ y=+y; m=+m; d=+d; if(y<100) y+=2000; if(m<1||m>12||d<1||d>31||y<2000) return; const x = ds(new Date(y,m-1,d)); if(x<=t) out.add(x); };
+    for(const l of lines){
+      for(const m of l.matchAll(/(\d{4})-(\d{1,2})-(\d{1,2})/g)) push(m[1],m[2],m[3]);
+      for(const m of l.matchAll(/\b(\d{1,2})\.(\d{1,2})\.(\d{2,4})\b/g)) push(m[3],m[2],m[1]);
+      for(const m of l.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/g)){ let a=+m[1], b=+m[2]; if(b>12) [a,b]=[b,a]; push(m[3],b,a); }
+    }
+    return [...out].sort();
+  }
+  function expand(dates, mode){
+    if(mode==="auto"){
+      let adj = 0; for(let i=1;i<dates.length;i++) if(diff(pd(dates[i]),pd(dates[i-1]))===1) adj++;
+      mode = adj >= dates.length/3 ? "days" : "starts";
+    }
+    if(mode==="days") return {mode, days:dates};
+    const per = (me() && me().cycle && me().cycle.per) || 5, days = new Set();
+    for(const d of dates) for(let i=0;i<per;i++){ const x = ds(add(pd(d),i)); if(x<=ds(today())) days.add(x); }
+    return {mode, days:[...days].sort()};
+  }
+  function impPreview(){
+    impDates = parseDates($("imp-text").value);
+    const go = $("imp-go");
+    if(!impDates.length){ $("imp-preview").textContent = "Noch keine Daten gefunden."; go.disabled = true; go.style.opacity=.5; return; }
+    const r = expand(impDates, impMode);
+    const starts = r.days.filter(d=>!r.days.includes(ds(add(pd(d),-1)))).length;
+    $("imp-preview").innerHTML = `Gefunden: <b>${starts} Perioden</b> zwischen ${pd(r.days[0]).toLocaleDateString("de-DE")} und ${pd(r.days[r.days.length-1]).toLocaleDateString("de-DE")}`+(impMode==="auto" ? ` <span class="small">(erkannt als ${r.mode==="days"?"Periodentage":"Periodenbeginn"})</span>` : "");
+    go.disabled = false; go.style.opacity = 1;
+  }
+  $("imp-text").oninput = impPreview;
+  $("imp-file").onchange = async e => { const f = e.target.files[0]; if(!f) return; $("imp-text").value = await f.text(); impPreview(); e.target.value=""; };
+  document.querySelectorAll("#imp-mode button").forEach(b=>b.onclick=()=>{ impMode=b.dataset.im; document.querySelectorAll("#imp-mode button").forEach(x=>x.classList.toggle("on",x===b)); impPreview(); });
+  $("imp-go").onclick = () => {
+    const u = me(), r = expand(impDates, impMode), before = u.periods.length;
+    u.periods = [...new Set([...u.periods, ...r.days])].sort(); saveUsers(); renderAll();
+    $("imp-text").value = ""; impPreview();
+    toast((u.periods.length-before)+" Periodentage übernommen ♡"); show("kalender");
+  };
+
+  /* ================= Partner teilen ================= */
+  const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  const dec = t => JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g,"+").replace(/_/g,"/")))));
+  function partnerLink(){
+    const u = me(), a = analyse(u), opt = {};
+    document.querySelectorAll("[data-share]").forEach(i=>opt[i.dataset.share]=i.checked);
+    const data = {n:u.name, at:ds(today()), ls:a.starts.length?a.starts[a.starts.length-1]:null, len:a.avgLen, per:a.avgPer, o:opt};
+    if(opt.mood && u.mood && u.mood[ds(today())]!=null) data.m = u.mood[ds(today())];
+    return location.origin + location.pathname + "#partner=" + enc(data);
+  }
+  $("pt-share").onclick = async () => {
+    if(!analyse(me()).starts.length) return toast("Trag zuerst deine Periode im Kalender ein");
+    const url = partnerLink(); $("pt-link").value = url; $("pt-link").classList.remove("hidden");
+    try{ if(navigator.share){ await navigator.share({title:"MÉLUNE", text:me().name+" teilt ihren Zyklus mit dir ♡", url}); return; } }catch(e){ if(e && e.name==="AbortError") return; }
+    try{ await navigator.clipboard.writeText(url); toast("Link kopiert ♡"); }catch(e){ $("pt-link").select(); toast("Link markiert, jetzt kopieren"); }
+  };
+  const PARTNER_TIPS = [
+    "Sie hat gerade ihre Periode. Eine Wärmflasche, ein Tee oder ihr Lieblingssnack sind jetzt eine liebe Geste.",
+    "Ihre Energie steigt. Eine gute Zeit für gemeinsame Pläne und Unternehmungen.",
+    "Ihre fruchtbaren Tage. Denkt an Verhütung, falls ihr gerade kein Baby plant.",
+    "Vor der Periode kann die Stimmung schwanken. Geduld, Verständnis und eine Umarmung helfen."
+  ];
+  function showPartnerView(data){
+    const o = data.o || {}, len = data.len || 28, per = data.per || 5;
+    $("pv-title").textContent = data.n+" teilt ihren Zyklus mit dir ♡";
+    $("pv-sub").textContent = "Stand: "+pd(data.at).toLocaleDateString("de-DE",{day:"numeric",month:"long"})+". Die Phase wird automatisch weitergerechnet.";
+    let html = "", idx = null;
+    if(data.ls){
+      let start = pd(data.ls), day = diff(today(), start)+1;
+      while(day > len) { start = add(start, len); day = diff(today(), start)+1; }
+      const ovuDay = len-14, next = add(start, len), ovu = add(start, ovuDay);
+      idx = day<=per ? 0 : day<ovuDay-1 ? 1 : day<=ovuDay+1 ? 2 : 3;
+      const names = ["Menstruation","Follikelphase","Eisprung & fruchtbare Tage","Lutealphase"];
+      if(o.phase) html += `<div class="card"><div class="eyebrow">Aktuelle Phase</div><div class="serif" style="font-size:26px">${names[idx]}</div><p class="muted">Zyklustag ${day} von ca. ${len}</p></div>`;
+      const duo = [];
+      if(o.period) duo.push(`<div class="card mini"><div class="eyebrow">Nächste Periode</div><div class="serif big">${fmt(next)}</div><div class="small">Voraussichtlich</div></div>`);
+      if(o.fertile){ const o2 = ovu < add(today(),-1) ? add(next, ovuDay) : ovu; duo.push(`<div class="card mini"><div class="eyebrow">Nächster Eisprung</div><div class="serif big">${fmt(o2)}</div><div class="small">Fruchtbar ca. ${fmt(add(o2,-5))} – ${fmt(add(o2,1))}</div></div>`); }
+      if(duo.length) html += `<div class="duo"${duo.length===1?' style="grid-template-columns:1fr"':""}>${duo.join("")}</div>`;
+    }
+    if(o.mood && data.m!=null && data.at===ds(today())) html += `<div class="card"><div class="eyebrow">Ihre Stimmung heute</div><div style="font-size:40px">${MOODS[data.m][0]}</div><p class="muted">${MOODS[data.m][1]}</p></div>`;
+    $("pv-cards").innerHTML = html || `<div class="card"><p class="muted">${data.n} hat noch nichts zum Teilen ausgewählt.</p></div>`;
+    $("pv-tip").textContent = idx!=null ? PARTNER_TIPS[idx] : "Frag sie einfach, wie es ihr geht ♡";
+    show("partnerview");
+  }
+
   /* ================= Navigation ================= */
-  const SUB = ["darstellung","konto","erinnerungen","sperre","verhuetung"];
+  const SUB = ["darstellung","konto","erinnerungen","sperre","verhuetung","hilfe","ueber","import","partner"];
+  const TABOF = {wissen:"body", artikel:"body"};
   function show(id){
     document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
     $("page-"+id).classList.remove("hidden");
-    const tab = SUB.includes(id) ? "profil" : id;
+    const tab = SUB.includes(id) ? "profil" : (TABOF[id] || id);
     document.querySelectorAll("nav [data-tab]").forEach(b=>b.classList.toggle("on", b.dataset.tab===tab));
-    document.body.classList.toggle("no-nav", id==="auth" || id==="onboard");
+    document.body.classList.toggle("no-nav", id==="auth" || id==="onboard" || id==="partnerview");
     window.scrollTo(0,0);
   }
   document.querySelectorAll("nav [data-tab]").forEach(b=>b.onclick=()=>{ renderAll(); show(b.dataset.tab); });
-  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ if(b.dataset.open==="konto") fillKonto(); if(b.dataset.open==="verhuetung"){ ctDraft=null; renderVerhuetung(); } renderSettings(); show(b.dataset.open); });
-  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>show("profil"));
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ if(b.dataset.open==="konto"){ fillKonto(); renderBackupInfo(); } if(b.dataset.open==="verhuetung"){ ctDraft=null; renderVerhuetung(); } renderSettings(); show(b.dataset.open); });
+  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>show(b.dataset.backTo || "profil"));
   document.querySelectorAll("[data-soon]").forEach(b=>b.onclick=()=>toast("Kommt bald ♡"));
 
   /* ================= Start ================= */
   paint();
-  if(me()){ enterApp(); if(me().pin) openPin({type:"unlock"}); }
+  const pm = location.hash.match(/^#partner=(.+)$/);
+  let pdata = null; if(pm){ try{ pdata = dec(pm[1]); }catch(e){} }
+  if(pdata) showPartnerView(pdata);
+  else if(me()){ enterApp(); if(me().pin) openPin({type:"unlock"}); }
   else if(!store.get("melune-onboarded", false)){ renderOnb(); show("onboard"); }
   else { setMode("register"); show("auth"); }
 </script>
