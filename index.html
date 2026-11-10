@@ -113,11 +113,20 @@
   .day.ovu{background:var(--fertile);color:#fff;font-weight:600}
   .day.today:after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
   .day.period.today:after,.day.ovu.today:after{background:#fff}
+  .day.has:before{content:"";position:absolute;top:4px;right:16%;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .day.period.has:before,.day.ovu.has:before{background:#fff}
+  .day.sel{box-shadow:0 0 0 2px var(--ink)}
+  .dd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .dd-tag{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--accent-pale);color:var(--accent);white-space:nowrap}
+  .dd-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .dd-row:last-of-type{border-bottom:0}
+  .dd-row span:first-child{color:var(--ink-soft)}
+  .dd-row span:last-child{font-weight:600;text-align:right}
   .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12px;color:var(--ink-soft)}
   .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 
   /* Body */
-  .bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:14px}
+  .bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:30px}
   .bars div{flex:1;background:var(--accent-soft);border-radius:8px 8px 4px 4px;position:relative;min-height:6px}
   .bars div.cur{background:var(--accent)}
   .bars div span{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink-soft)}
@@ -174,7 +183,9 @@
   .hbtns{display:flex;gap:8px}
   .icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
   .icon-btn svg{width:20px;height:20px}
-  .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .duo>*{min-width:0}
+  .card.mini .eyebrow{overflow-wrap:anywhere;hyphens:auto}
   .card.mini{padding:18px 16px}
   .card.mini .eyebrow{font-size:9.5px;letter-spacing:1.8px;margin-bottom:8px}
   .big{font-size:26px;line-height:1.1;margin-bottom:4px}
@@ -187,7 +198,9 @@
   .mood{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);font-size:26px;cursor:pointer;transition:transform .15s}
   .mood.on{border:2px solid var(--accent);background:var(--accent-pale);transform:scale(1.1)}
 
-  .pickers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .pickers{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:10px}
+  .picker>*{min-width:0}
+  @media (max-width:340px){ .pickers{grid-template-columns:1fr} .card.mini .eyebrow{letter-spacing:1.2px} }
   .picker{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:18px;padding:10px;cursor:pointer;background:var(--card)}
   .picker input{width:42px;height:42px;border:0;padding:0;border-radius:50%;background:none;cursor:pointer;flex:none}
   .picker input::-webkit-color-swatch-wrapper{padding:0}
@@ -448,9 +461,11 @@
         <span><i style="border:2px dashed var(--accent)"></i>Erwartet</span>
         <span><i style="background:var(--fertile-soft)"></i>Fruchtbar</span>
         <span><i style="background:var(--fertile)"></i>Eisprung</span>
+        <span><i style="width:6px;height:6px;margin:0 6px 0 3px;vertical-align:1px;background:var(--accent)"></i>Eintrag</span>
       </div>
     </div>
-    <p class="muted center" style="padding:0 12px">Tippe auf einen Tag, um deine Periode ein- oder auszutragen.</p>
+    <div class="card" id="cal-detail"></div>
+    <p class="muted center" style="padding:0 12px">Tippe auf einen Tag, um zu sehen, was du eingetragen hast.</p>
   </section>
 
   <!-- MY BODY -->
@@ -571,7 +586,7 @@
         <span><div class="t">Über MÉLUNE</div><div class="s">Version und Informationen</div></span><span class="chev">›</span>
       </button>
     </div>
-    <div class="brand"><div class="serif">MÉLUNE</div><div class="small">Version 0.6 · Prototyp</div></div>
+    <div class="brand"><div class="serif">MÉLUNE</div><div class="small">Version 0.7 · Prototyp</div></div>
   </section>
 
   <!-- DARSTELLUNG -->
@@ -677,13 +692,14 @@
     <div id="pv-cards"></div>
     <div class="card impuls"><div class="eyebrow">So kannst du sie unterstützen</div><div class="serif" id="pv-tip"></div></div>
     <p class="small center" style="padding:0 16px">Schätzung · keine sichere Verhütungsmethode.</p>
+    <button class="btn" id="pv-own" style="margin-top:18px">Eigene MÉLUNE öffnen</button>
   </section>
 
   <!-- HILFE -->
   <section id="page-hilfe" class="page hidden">
     <div class="sub-head"><button class="back" data-back aria-label="Zurück">‹</button><h1 class="serif">Hilfe &amp; Support</h1></div>
     <div class="card" style="padding-top:6px;padding-bottom:6px">
-      <details class="faq"><summary>Wie trage ich meine Periode ein?</summary><p>Geh auf <b>Kalender</b> und tippe auf jeden Tag, an dem du deine Periode hattest. Tippst du nochmal, ist der Eintrag wieder weg. MÉLUNE berechnet daraus automatisch deine nächste Periode und deinen Eisprung.</p></details>
+      <details class="faq"><summary>Wie trage ich meine Periode ein?</summary><p>Geh auf <b>Kalender</b>, tippe auf einen Tag und dann auf <b>Periode eintragen</b>. Mit <b>Periode austragen</b> ist der Eintrag wieder weg. Unter dem Kalender siehst du auch, was du an dem Tag sonst eingetragen hast (Stimmung, Wasser, Schlaf, Pille). MÉLUNE berechnet daraus automatisch deine nächste Periode und deinen Eisprung.</p></details>
       <details class="faq"><summary>Wie genau sind die Vorhersagen?</summary><p>Die Vorhersagen sind Schätzungen auf Basis deiner Einträge. Je mehr Zyklen du einträgst, desto genauer werden sie. MÉLUNE ist <b>keine sichere Verhütungsmethode</b>.</p></details>
       <details class="faq"><summary>Wo sind meine Daten gespeichert?</summary><p>Nur auf deinem Gerät, im Speicher deines Browsers. Niemand außer dir kann sie sehen. Wenn du die Browserdaten löschst, sind sie weg. Mach deshalb ab und zu ein Backup unter <b>Profil › Mein Konto › Daten sichern</b>.</p></details>
       <details class="faq"><summary>Wie nehme ich meine Daten auf ein neues Handy mit?</summary><p>Lade auf dem alten Handy unter <b>Mein Konto</b> ein Backup herunter und schick dir die Datei (z. B. per AirDrop oder Mail). Öffne MÉLUNE auf dem neuen Handy und tippe bei der Anmeldung auf <b>Backup laden</b>.</p></details>
@@ -708,7 +724,7 @@
       <div class="moon"></div>
       <div class="serif" style="font-size:30px;letter-spacing:6px">MÉLUNE</div>
       <p class="small">Dein Zyklus · Dein Gefühl</p>
-      <p class="small" style="margin-top:6px">Version 0.6 · Prototyp</p>
+      <p class="small" style="margin-top:6px">Version 0.7 · Prototyp</p>
     </div>
     <div class="card" style="padding-top:6px;padding-bottom:6px">
       <details class="faq"><summary>Was ist MÉLUNE?</summary><p>MÉLUNE ist eine Zyklus-App, die dich durch deinen Monat begleitet: Periode, fruchtbare Tage, Stimmung und kleine Impulse für jeden Tag, in deinen Lieblingsfarben.</p></details>
@@ -1133,7 +1149,7 @@
   $("ct-start").onchange = () => { ctDraft.start = $("ct-start").value; };
   function saveContra(){
     const u = me(); u.contra = {...ctDraft};
-    if(u.contra.method==="pill") u.reminders.pill = true;
+    u.reminders.pill = u.contra.method==="pill";
     saveUsers(); renderAll(); toast("Gespeichert ♡");
   }
   $("ct-save").onclick = () => { ctDraft.start = $("ct-start").value || ds(today()); saveContra(); show("profil"); };
@@ -1143,7 +1159,7 @@
     const t = today(), WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
     $("h-week").innerHTML = Array.from({length:7},(_,i)=>{ const d = add(t,i-3);
       return `<button class="wday${i===3?" today":""}" data-d="${ds(d)}"><span>${WD[d.getDay()]}</span><b>${d.getDate()}</b></button>`; }).join("");
-    document.querySelectorAll("#h-week .wday").forEach(b=>b.onclick=()=>{ const d = pd(b.dataset.d); calMonth = new Date(d.getFullYear(), d.getMonth(), 1); renderCal(); show("kalender"); });
+    document.querySelectorAll("#h-week .wday").forEach(b=>b.onclick=()=>{ const d = pd(b.dataset.d); calSel = b.dataset.d; calMonth = new Date(d.getFullYear(), d.getMonth(), 1); renderCal(); show("kalender"); });
   }
 
   /* ================= Schwankung & letzter Zyklus ================= */
@@ -1155,8 +1171,8 @@
     else if(ls.length>=2){ const mn=Math.min(...ls), mx=Math.max(...ls), h=Math.ceil((mx-mn)/2);
       vary = h===0 ? "± 0 Tage" : "± "+h+(h===1?" Tag":" Tage"); varySrc = mn===mx ? "Sehr regelmäßig" : mn+"–"+mx+" Tage · aus Einträgen"; }
     else { vary = "–"; varySrc = "Tippe zum Eintragen"; }
-    if(a.cycles.length){ const lc = a.cycles[a.cycles.length-1]; last = lc.len+" Tage"; lastSrc = "Ab "+pd(lc.start).toLocaleDateString("de-DE",{day:"numeric",month:"short"})+" · aus Einträgen"; }
-    else if(c.lastLen){ last = c.lastLen+" Tage"; lastSrc = "Deine Angabe"; }
+    if(c.lastLen){ last = c.lastLen+" Tage"; lastSrc = "Deine Angabe"; }
+    else if(a.cycles.length){ const lc = a.cycles[a.cycles.length-1]; last = lc.len+" Tage"; lastSrc = "Ab "+pd(lc.start).toLocaleDateString("de-DE",{day:"numeric",month:"short"})+" · aus Einträgen"; }
     else { last = "–"; lastSrc = "Tippe zum Eintragen"; }
     return {vary, varySrc, last, lastSrc};
   }
@@ -1171,6 +1187,7 @@
     ceVary = c.vary || "auto";
     document.querySelectorAll("#ce-vary button").forEach(b=>b.classList.toggle("on", b.dataset.v===String(ceVary)));
     $("ce-last").value = c.lastLen || "";
+    const a = analyse(u); $("ce-last").placeholder = a.cycles.length ? "aus Einträgen: "+a.cycles[a.cycles.length-1].len : "z. B. 29";
     $("h-cyc-edit").classList.remove("hidden");
     $("h-cyc-edit").scrollIntoView({behavior:"smooth", block:"center"});
     if(focusLast) setTimeout(()=>$("ce-last").focus(), 300);
@@ -1197,7 +1214,7 @@
     $("h-mood-txt").textContent = cur!=null ? "Heute: "+MOODS[cur][1]+" · danke, dass du es teilst ♡" : "";
     document.querySelectorAll("#h-moods .mood").forEach(b=>b.onclick=()=>{ const i=+b.dataset.mood, k=ds(today()); if(u.mood[k]===i) delete u.mood[k]; else u.mood[k]=i; saveUsers(); renderMood(); });
   }
-  $("h-to-cal").onclick = () => { renderAll(); show("kalender"); };
+  $("h-to-cal").onclick = () => { resetCal(); renderAll(); show("kalender"); };
   $("h-to-settings").onclick = () => { renderAll(); show("profil"); };
 
   /* ================= Wasser & Schlaf ================= */
@@ -1274,7 +1291,7 @@
       $("h-next-period").textContent = "–"; $("h-next-ovu").textContent = "–"; $("h-daypill").classList.add("hidden");
     }
     $("h-impuls").textContent = impulse(a);
-    if(a.late>0) $("h-phase").textContent = "Deine Periode ist "+a.late+(a.late===1?" Tag":" Tage")+" überfällig.";
+    if(a.late>0){ $("h-phase").textContent = "Deine Periode ist "+a.late+(a.late===1?" Tag":" Tage")+" überfällig."; $("h-next-period").textContent = "überfällig"; }
     renderContraCard(); renderToday();
     // Erinnerungen
     const box = $("h-reminders"); box.innerHTML = "";
@@ -1321,9 +1338,35 @@
       else if(ovu.has(k)) e.classList.add("ovu");
       else if(fert.has(k)) e.classList.add("fertile");
       if(k===t) e.classList.add("today");
-      e.onclick = () => togglePeriod(k);
+      if(hasEntry(u,k)) e.classList.add("has");
+      if(k===calSel) e.classList.add("sel");
+      e.onclick = () => { calSel = k; renderCal(); };
       cal.appendChild(e);
     }
+    renderDayDetail(u, a, pred, fert, ovu);
+  }
+  let calSel = null;
+  function hasEntry(u,k){ const d = u.daily[k]; return !!((u.mood && u.mood[k]!=null) || (d && (d.water>0 || d.sleep!=null)) || u.pillTaken[k]); }
+  function renderDayDetail(u, a, pred, fert, ovu){
+    const k = calSel || ds(today()), d = pd(k), box = $("cal-detail"), future = d > today();
+    const title = d.toLocaleDateString("de-DE",{weekday:"long", day:"numeric", month:"long"});
+    let tag = "";
+    if(a.set.has(k)) tag = "Periode"; else if(pred.has(k)) tag = "Periode erwartet"; else if(ovu.has(k)) tag = "Eisprung"; else if(fert.has(k)) tag = "Fruchtbar";
+    let cd = null; for(let i=a.starts.length-1;i>=0;i--){ const st = pd(a.starts[i]); if(st<=d){ const n = diff(d,st)+1; if(n<=60) cd = n; break; } }
+    const rows = [], dl = u.daily[k] || {}, mood = u.mood ? u.mood[k] : null;
+    if(cd && !future) rows.push(["Zyklustag", String(cd)]);
+    if(mood!=null && MOODS[mood]) rows.push(["Stimmung", MOODS[mood][0]+" "+MOODS[mood][1]]);
+    if(dl.water>0) rows.push(["Wasser", dl.water+" von 8 Gläsern"]);
+    if(dl.sleep!=null) rows.push(["Schlaf", String(dl.sleep).replace(".",",")+" h"]);
+    if(u.pillTaken[k]) rows.push(["Pille", "Genommen ✓"]);
+    else if(u.contra && u.contra.method==="pill" && u.contra.start && !future && k>=u.contra.start && k<ds(today())) { const cs = (diff(d,pd(u.contra.start))%28); if(u.contra.type==="28" || cs<21) rows.push(["Pille", "Nicht eingetragen"]); }
+    let html = `<div class="dd-head"><div><div class="eyebrow">${k===ds(today())?"Heute":"Tag im Kalender"}</div><div class="serif" style="font-size:24px;line-height:1.2">${title}</div></div>${tag?`<span class="dd-tag">${tag}</span>`:""}</div>`;
+    if(rows.length) html += `<div style="margin-top:8px">`+rows.map(([l,v])=>`<div class="dd-row"><span>${l}</span><span>${v}</span></div>`).join("")+`</div>`;
+    else html += `<p class="muted" style="margin-top:8px">${future ? "Dieser Tag liegt in der Zukunft." : "An diesem Tag hast du nichts eingetragen."}</p>`;
+    if(future) html += `<p class="small" style="margin-top:10px">Zukünftige Tage kannst du noch nicht eintragen.</p>`;
+    else html += `<button class="btn ${a.set.has(k)?"":"primary"}" id="cal-toggle">${a.set.has(k)?"Periode austragen":"Periode eintragen"}</button>`;
+    box.innerHTML = html;
+    const tb = $("cal-toggle"); if(tb) tb.onclick = () => togglePeriod(k);
   }
   function togglePeriod(k){
     const u = me();
@@ -1378,7 +1421,7 @@
   function openPin(flow){
     pinFlow = flow; pinBuf = ""; drawDots();
     $("lock-title").textContent = flow.type==="unlock" ? "PIN eingeben" : flow.type==="set" ? "Neue PIN festlegen" : "PIN wiederholen";
-    $("lock-sub2").innerHTML = flow.type==="unlock" ? "Willkommen zurück, "+me().name : "4 Ziffern";
+    $("lock-sub2").textContent = flow.type==="unlock" ? "Willkommen zurück, "+me().name : "4 Ziffern";
     $("lock").classList.remove("hidden");
     $("k-x").textContent = flow.type==="unlock" ? "Vergessen?" : "Abbrechen";
   }
@@ -1414,7 +1457,7 @@
   };
   $("lock-change").onclick = () => openPin({type:"set"});
   $("lock-now").onclick = () => { unlocked=false; openPin({type:"unlock"}); };
-  document.addEventListener("visibilitychange", ()=>{ if(document.hidden && me() && me().pin){ unlocked=false; openPin({type:"unlock"}); } });
+  document.addEventListener("visibilitychange", ()=>{ if(document.hidden && me() && me().pin && $("page-partnerview").classList.contains("hidden")){ unlocked=false; openPin({type:"unlock"}); } });
 
   /* ================= Konto ================= */
   function fillKonto(){
@@ -1510,7 +1553,7 @@
       if(users[u.email] && session!==u.email && !confirm("Auf diesem Gerät gibt es schon ein Konto mit "+u.email+". Mit dem Backup überschreiben?")) return;
       if(session===u.email && !confirm("Deine aktuellen Daten werden durch das Backup ersetzt. Fortfahren?")) return;
       users[u.email] = ensure(u); saveUsers();
-      if(data.look){ look = data.look; saveLook(); $("hex").value = (look.name ? THEMES[look.name].accent : look.hex).toUpperCase(); }
+      if(data.look && (THEMES[data.look.name] || /^#[0-9a-f]{6}$/i.test(data.look.hex||""))){ look = data.look; saveLook(); $("hex").value = (look.name ? THEMES[look.name].accent : look.hex).toUpperCase(); }
       session = u.email; store.set("melune-session", u.email); store.set("melune-onboarded", true);
       unlocked = true; enterApp(); toast("Backup geladen. Willkommen zurück, "+u.name+" ♡");
     }catch(e){ toast("Diese Datei ist kein gültiges MÉLUNE-Backup"); }
@@ -1550,7 +1593,7 @@
     if(!impDates.length){ $("imp-preview").textContent = "Noch keine Daten gefunden."; go.disabled = true; go.style.opacity=.5; return; }
     const r = expand(impDates, impMode);
     const starts = r.days.filter(d=>!r.days.includes(ds(add(pd(d),-1)))).length;
-    $("imp-preview").innerHTML = `Gefunden: <b>${starts} Perioden</b> zwischen ${pd(r.days[0]).toLocaleDateString("de-DE")} und ${pd(r.days[r.days.length-1]).toLocaleDateString("de-DE")}`+(impMode==="auto" ? ` <span class="small">(erkannt als ${r.mode==="days"?"Periodentage":"Periodenbeginn"})</span>` : "");
+    $("imp-preview").innerHTML = `Gefunden: <b>${starts} ${starts===1?"Periode":"Perioden"}</b> zwischen ${pd(r.days[0]).toLocaleDateString("de-DE")} und ${pd(r.days[r.days.length-1]).toLocaleDateString("de-DE")}`+(impMode==="auto" ? ` <span class="small">(erkannt als ${r.mode==="days"?"Periodentage":"Periodenbeginn"})</span>` : "");
     go.disabled = false; go.style.opacity = 1;
   }
   $("imp-text").oninput = impPreview;
@@ -1585,14 +1628,18 @@
     "Ihre fruchtbaren Tage. Denkt an Verhütung, falls ihr gerade kein Baby plant.",
     "Vor der Periode kann die Stimmung schwanken. Geduld, Verständnis und eine Umarmung helfen."
   ];
+  const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   function showPartnerView(data){
-    const o = data.o || {}, len = data.len || 28, per = data.per || 5;
+    data.n = String(data.n||"Sie").slice(0,40);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(data.at||"")) data.at = ds(today());
+    if(data.ls && !/^\d{4}-\d{2}-\d{2}$/.test(data.ls)) data.ls = null;
+    const o = data.o || {}, len = Math.min(60,Math.max(15,+data.len||28)), per = Math.min(10,Math.max(1,+data.per||5));
     $("pv-title").textContent = data.n+" teilt ihren Zyklus mit dir ♡";
     $("pv-sub").textContent = "Stand: "+pd(data.at).toLocaleDateString("de-DE",{day:"numeric",month:"long"})+". Die Phase wird automatisch weitergerechnet.";
     let html = "", idx = null;
     if(data.ls){
       let start = pd(data.ls), day = diff(today(), start)+1;
-      while(day > len) { start = add(start, len); day = diff(today(), start)+1; }
+      if(day > len) { start = add(start, Math.floor((day-1)/len)*len); day = diff(today(), start)+1; }
       const ovuDay = len-14, next = add(start, len), ovu = add(start, ovuDay);
       idx = day<=per ? 0 : day<ovuDay-1 ? 1 : day<=ovuDay+1 ? 2 : 3;
       const names = ["Menstruation","Follikelphase","Eisprung & fruchtbare Tage","Lutealphase"];
@@ -1602,11 +1649,13 @@
       if(o.fertile){ const o2 = ovu < add(today(),-1) ? add(next, ovuDay) : ovu; duo.push(`<div class="card mini"><div class="eyebrow">Nächster Eisprung</div><div class="serif big">${fmt(o2)}</div><div class="small">Fruchtbar ca. ${fmt(add(o2,-5))} – ${fmt(add(o2,1))}</div></div>`); }
       if(duo.length) html += `<div class="duo"${duo.length===1?' style="grid-template-columns:1fr"':""}>${duo.join("")}</div>`;
     }
-    if(o.mood && data.m!=null && data.at===ds(today())) html += `<div class="card"><div class="eyebrow">Ihre Stimmung heute</div><div style="font-size:40px">${MOODS[data.m][0]}</div><p class="muted">${MOODS[data.m][1]}</p></div>`;
-    $("pv-cards").innerHTML = html || `<div class="card"><p class="muted">${data.n} hat noch nichts zum Teilen ausgewählt.</p></div>`;
+    if(o.mood && MOODS[data.m] && data.at===ds(today())) html += `<div class="card"><div class="eyebrow">Ihre Stimmung heute</div><div style="font-size:40px">${MOODS[data.m][0]}</div><p class="muted">${MOODS[data.m][1]}</p></div>`;
+    $("pv-cards").innerHTML = html || `<div class="card"><p class="muted">${esc(data.n)} hat noch nichts zum Teilen ausgewählt.</p></div>`;
     $("pv-tip").textContent = idx!=null ? PARTNER_TIPS[idx] : "Frag sie einfach, wie es ihr geht ♡";
     show("partnerview");
   }
+
+  $("pv-own").onclick = () => { location.hash = ""; location.reload(); };
 
   /* ================= Navigation ================= */
   const SUB = ["darstellung","konto","erinnerungen","sperre","verhuetung","hilfe","ueber","import","partner"];
@@ -1619,7 +1668,8 @@
     document.body.classList.toggle("no-nav", id==="auth" || id==="onboard" || id==="partnerview");
     window.scrollTo(0,0);
   }
-  document.querySelectorAll("nav [data-tab]").forEach(b=>b.onclick=()=>{ renderAll(); show(b.dataset.tab); });
+  function resetCal(){ calSel = null; calMonth = new Date(today().getFullYear(), today().getMonth(), 1); }
+  document.querySelectorAll("nav [data-tab]").forEach(b=>b.onclick=()=>{ if(b.dataset.tab==="kalender") resetCal(); renderAll(); show(b.dataset.tab); });
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{ if(b.dataset.open==="konto"){ fillKonto(); renderBackupInfo(); } if(b.dataset.open==="verhuetung"){ ctDraft=null; renderVerhuetung(); } renderSettings(); show(b.dataset.open); });
   document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>show(b.dataset.backTo || "profil"));
   document.querySelectorAll("[data-soon]").forEach(b=>b.onclick=()=>toast("Kommt bald ♡"));
